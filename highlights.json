@@ -1,11 +1,11 @@
 {
-  "lastUpdated": "2025-09-09T12:50:22.050Z",
+  "lastUpdated": "2025-09-09T13:03:45.184Z",
   "highlights": [
     {
       "id": "37U_cW0OByc",
       "team1": "Baltimore Ravens",
       "team2": "Buffalo Bills",
-      "week": 15,
+      "week": 1,
       "date": "2025-09-08",
       "description": "Baltimore Ravens vs Buffalo Bills Game Highlights | NFL 2025 Season Week 1",
       "videoId": "37U_cW0OByc",
@@ -14,10 +14,22 @@
       "thumbnail": "https://i.ytimg.com/vi/37U_cW0OByc/mqdefault.jpg"
     },
     {
+      "id": "fw1S3xgiZSw",
+      "team1": "Denver Broncos",
+      "team2": "Tennessee Titans",
+      "week": 1,
+      "date": "2025-09-07",
+      "description": "Tennessee Titans vs. Denver Broncos Game Highlights | NFL 2025 Season Week 1",
+      "videoId": "fw1S3xgiZSw",
+      "channel": "NFL",
+      "publishedAt": "2025-09-07T23:49:37Z",
+      "thumbnail": "https://i.ytimg.com/vi/fw1S3xgiZSw/mqdefault.jpg"
+    },
+    {
       "id": "lvOdHfaB6RQ",
       "team1": "Houston Texans",
       "team2": "Los Angeles Rams",
-      "week": 15,
+      "week": 1,
       "date": "2025-09-07",
       "description": "Houston Texans vs. Los Angeles Rams Game Highlights | NFL 2025 Season Week 1",
       "videoId": "lvOdHfaB6RQ",
@@ -26,10 +38,34 @@
       "thumbnail": "https://i.ytimg.com/vi/lvOdHfaB6RQ/mqdefault.jpg"
     },
     {
+      "id": "zr1dq7edoMs",
+      "team1": "San Francisco 49ers",
+      "team2": "Seattle Seahawks",
+      "week": 1,
+      "date": "2025-09-07",
+      "description": "San Francisco 49ers vs Seattle Seahawks Game Highlights | 2025 NFL Season Week 1",
+      "videoId": "zr1dq7edoMs",
+      "channel": "NFL",
+      "publishedAt": "2025-09-07T23:30:59Z",
+      "thumbnail": "https://i.ytimg.com/vi/zr1dq7edoMs/mqdefault.jpg"
+    },
+    {
+      "id": "LQUNYGKKxsM",
+      "team1": "Chicago Bears",
+      "team2": "Minnesota Vikings",
+      "week": 1,
+      "date": "2025-09-09",
+      "description": "Minnesota Vikings vs Chicago Bears Game Highlights | NFL 2025 Season Week 1",
+      "videoId": "LQUNYGKKxsM",
+      "channel": "NFL",
+      "publishedAt": "2025-09-09T03:54:58Z",
+      "thumbnail": "https://i.ytimg.com/vi/LQUNYGKKxsM/mqdefault.jpg"
+    },
+    {
       "id": "3t-ZTu1Mm4I",
       "team1": "Carolina Panthers",
       "team2": "Jacksonville Jaguars",
-      "week": 15,
+      "week": 3,
       "date": "2025-09-07",
       "description": "Carolina Panthers vs. Jacksonville Jaguars Game Highlights | NFL 2025 Season Week 1",
       "videoId": "3t-ZTu1Mm4I",
@@ -38,22 +74,10 @@
       "thumbnail": "https://i.ytimg.com/vi/3t-ZTu1Mm4I/mqdefault.jpg"
     },
     {
-      "id": "A_EbbsPORqg",
-      "team1": "Atlanta Falcons",
-      "team2": "Tampa Bay Buccaneers",
-      "week": 15,
-      "date": "2025-09-07",
-      "description": "Tampa Bay Buccaneers vs. Atlanta Falcons Game Highlights | NFL 2025 Season Week 1",
-      "videoId": "A_EbbsPORqg",
-      "channel": "NFL",
-      "publishedAt": "2025-09-07T20:44:37Z",
-      "thumbnail": "https://i.ytimg.com/vi/A_EbbsPORqg/mqdefault.jpg"
-    },
-    {
       "id": "HMw8O4yzEiQ",
       "team1": "New York Giants",
       "team2": "Washington Commanders",
-      "week": 15,
+      "week": 3,
       "date": "2025-09-07",
       "description": "New York Giants vs Washington Commanders Game Highlights | NFL 2025 Season Week 1",
       "videoId": "HMw8O4yzEiQ",
@@ -65,109 +89,13 @@
       "id": "JcRpVsFuGKw",
       "team1": "Indianapolis Colts",
       "team2": "Miami Dolphins",
-      "week": 15,
+      "week": 5,
       "date": "2025-09-07",
       "description": "Miami Dolphins vs Indianapolis Colts Game Highlights | 2025 NFL Season Week 1",
       "videoId": "JcRpVsFuGKw",
       "channel": "NFL",
       "publishedAt": "2025-09-07T20:31:45Z",
       "thumbnail": "https://i.ytimg.com/vi/JcRpVsFuGKw/mqdefault.jpg"
-    },
-    {
-      "id": "kapv4nxG0eI",
-      "team1": "New York Jets",
-      "team2": "Pittsburgh Steelers",
-      "week": 15,
-      "date": "2025-09-07",
-      "description": "Pittsburgh Steelers vs. New York Jets Game Highlights | NFL 2025 Season Week 1",
-      "videoId": "kapv4nxG0eI",
-      "channel": "NFL",
-      "publishedAt": "2025-09-07T20:28:16Z",
-      "thumbnail": "https://i.ytimg.com/vi/kapv4nxG0eI/mqdefault.jpg"
-    },
-    {
-      "id": "qa0wI0ptHv4",
-      "team1": "Arizona Cardinals",
-      "team2": "New Orleans Saints",
-      "week": 15,
-      "date": "2025-09-07",
-      "description": "Arizona Cardinals vs. New Orleans Saints Game Highlights | NFL 2025 Season Week 1",
-      "videoId": "qa0wI0ptHv4",
-      "channel": "NFL",
-      "publishedAt": "2025-09-07T20:22:53Z",
-      "thumbnail": "https://i.ytimg.com/vi/qa0wI0ptHv4/mqdefault.jpg"
-    },
-    {
-      "id": "620wa-wojh8",
-      "team1": "Kansas City Chiefs",
-      "team2": "Los Angeles Chargers",
-      "week": 15,
-      "date": "2025-09-06",
-      "description": "Kansas City Chiefs vs Los Angeles Chargers | 2025 Week 1 São Paulo Game Highlights",
-      "videoId": "620wa-wojh8",
-      "channel": "NFL",
-      "publishedAt": "2025-09-06T03:38:34Z",
-      "thumbnail": "https://i.ytimg.com/vi/620wa-wojh8/mqdefault.jpg"
-    },
-    {
-      "id": "fw1S3xgiZSw",
-      "team1": "Denver Broncos",
-      "team2": "Tennessee Titans",
-      "week": 15,
-      "date": "2025-09-07",
-      "description": "Tennessee Titans vs. Denver Broncos Game Highlights | NFL 2025 Season Week 1",
-      "videoId": "fw1S3xgiZSw",
-      "channel": "NFL",
-      "publishedAt": "2025-09-07T23:49:37Z",
-      "thumbnail": "https://i.ytimg.com/vi/fw1S3xgiZSw/mqdefault.jpg"
-    },
-    {
-      "id": "5RcYLRlbKzo",
-      "team1": "Dallas Cowboys",
-      "team2": "Philadelphia Eagles",
-      "week": 16,
-      "date": "2025-09-03",
-      "description": "Cowboys vs Eagles is around the corner plus all your injury updates | The Insiders",
-      "videoId": "5RcYLRlbKzo",
-      "channel": "NFL",
-      "publishedAt": "2025-09-03T00:12:56Z",
-      "thumbnail": "https://i.ytimg.com/vi/5RcYLRlbKzo/mqdefault.jpg"
-    },
-    {
-      "id": "zr1dq7edoMs",
-      "team1": "San Francisco 49ers",
-      "team2": "Seattle Seahawks",
-      "week": 17,
-      "date": "2025-09-07",
-      "description": "San Francisco 49ers vs Seattle Seahawks Game Highlights | 2025 NFL Season Week 1",
-      "videoId": "zr1dq7edoMs",
-      "channel": "NFL",
-      "publishedAt": "2025-09-07T23:30:59Z",
-      "thumbnail": "https://i.ytimg.com/vi/zr1dq7edoMs/mqdefault.jpg"
-    },
-    {
-      "id": "Ch0yoxEwLho",
-      "team1": "Dallas Cowboys",
-      "team2": "Philadelphia Eagles",
-      "week": 18,
-      "date": "2025-09-05",
-      "description": "Dallas Cowboys vs Philadelphia Eagles | Game day Final Reaction",
-      "videoId": "Ch0yoxEwLho",
-      "channel": "NFL",
-      "publishedAt": "2025-09-05T05:09:09Z",
-      "thumbnail": "https://i.ytimg.com/vi/Ch0yoxEwLho/mqdefault.jpg"
-    },
-    {
-      "id": "Zn3LxRMAHFQ",
-      "team1": "Dallas Cowboys",
-      "team2": "Philadelphia Eagles",
-      "week": 18,
-      "date": "2025-09-05",
-      "description": "Dallas Cowboys vs Philadelphia Eagles | 2025 Week 1 Kickoff Game Highlights",
-      "videoId": "Zn3LxRMAHFQ",
-      "channel": "NFL",
-      "publishedAt": "2025-09-05T04:36:57Z",
-      "thumbnail": "https://i.ytimg.com/vi/Zn3LxRMAHFQ/mqdefault.jpg"
     }
   ]
 }
