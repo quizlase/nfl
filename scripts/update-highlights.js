@@ -4,6 +4,11 @@ const path = require('path');
 // YouTube API configuration
 const YOUTUBE_API_KEY = process.env.YOUTUBE_API_KEY;
 const NFL_CHANNEL_ID = 'UCDVYQ4Zhbm3S2dlz7P1GBDg'; // Official NFL channel ID
+const NFL_CHANNELS = [
+    'UCDVYQ4Zhbm3S2dlz7P1GBDg', // Official NFL channel
+    'UCdNnwFi4Ncy1LdmZWdd0Z3g', // NFL Network
+    'UCq-Fj5jknLsUf-MWSy4_brA'  // NFL Films
+];
 
 // NFL teams for generating search queries
 const NFL_TEAMS = [
@@ -20,17 +25,24 @@ const NFL_TEAMS = [
 // Current NFL season week (this would need to be updated based on current date)
 const getCurrentWeek = () => {
     const now = new Date();
-    // 2024 NFL season started September 5, 2024
+    // 2024 NFL season started September 5, 2024 (Week 1)
     const seasonStart = new Date('2024-09-05');
-    const weeksSinceStart = Math.floor((now - seasonStart) / (7 * 24 * 60 * 60 * 1000));
-    const week = Math.min(Math.max(weeksSinceStart + 1, 1), 18); // NFL regular season is 18 weeks
+    
+    // Calculate days since season start
+    const daysSinceStart = Math.floor((now - seasonStart) / (24 * 60 * 60 * 1000));
+    
+    // Each NFL week starts on Tuesday and ends on Monday
+    // Week 1: Sep 5-9, Week 2: Sep 10-16, etc.
+    const week = Math.floor(daysSinceStart / 7) + 1;
+    const finalWeek = Math.min(Math.max(week, 1), 18); // NFL regular season is 18 weeks
     
     console.log('Current date:', now.toISOString());
     console.log('Season start:', seasonStart.toISOString());
-    console.log('Weeks since start:', weeksSinceStart);
-    console.log('Current calculated week:', week);
+    console.log('Days since start:', daysSinceStart);
+    console.log('Calculated week:', week);
+    console.log('Final week:', finalWeek);
     
-    return week;
+    return finalWeek;
 };
 
 // Search for NFL highlights on YouTube
@@ -46,20 +58,37 @@ async function searchNFLHighlights() {
     const highlights = [];
     const currentWeek = getCurrentWeek();
     
-    // Search for highlights from the last 4 weeks
-    for (let week = Math.max(1, currentWeek - 3); week <= currentWeek; week++) {
+    // Search for highlights from Week 1 to current week
+    for (let week = 1; week <= currentWeek; week++) {
         try {
+            console.log(`Searching for Week ${week} highlights...`);
             const weekHighlights = await searchHighlightsForWeek(week);
+            console.log(`Found ${weekHighlights.length} highlights for Week ${week}`);
             highlights.push(...weekHighlights);
         } catch (error) {
             console.error(`Error searching for week ${week} highlights:`, error);
         }
     }
 
-    // Remove duplicates based on videoId
-    const uniqueHighlights = highlights.filter((highlight, index, self) => 
-        index === self.findIndex(h => h.videoId === highlight.videoId)
-    );
+    // Remove duplicates based on videoId and also by team combination + week
+    const seenVideoIds = new Set();
+    const seenTeamCombinations = new Set();
+    const uniqueHighlights = [];
+
+    for (const highlight of highlights) {
+        const teamKey = `${highlight.team1}-${highlight.team2}-${highlight.week}`;
+        const reverseTeamKey = `${highlight.team2}-${highlight.team1}-${highlight.week}`;
+        
+        // Skip if we've seen this video ID or this team combination for this week
+        if (!seenVideoIds.has(highlight.videoId) && 
+            !seenTeamCombinations.has(teamKey) && 
+            !seenTeamCombinations.has(reverseTeamKey)) {
+            
+            seenVideoIds.add(highlight.videoId);
+            seenTeamCombinations.add(teamKey);
+            uniqueHighlights.push(highlight);
+        }
+    }
 
     console.log(`Found ${highlights.length} total highlights, ${uniqueHighlights.length} unique`);
     return uniqueHighlights;
@@ -78,32 +107,34 @@ async function searchHighlightsForWeek(week) {
     ];
 
     for (const query of searchQueries) {
-        try {
-            const response = await fetch(
-                `https://www.googleapis.com/youtube/v3/search?` +
-                `part=snippet&` +
-                `channelId=${NFL_CHANNEL_ID}&` +
-                `q=${encodeURIComponent(query)}&` +
-                `type=video&` +
-                `maxResults=10&` +
-                `order=date&` +
-                `key=${YOUTUBE_API_KEY}`
-            );
+        for (const channelId of NFL_CHANNELS) {
+            try {
+                const response = await fetch(
+                    `https://www.googleapis.com/youtube/v3/search?` +
+                    `part=snippet&` +
+                    `channelId=${channelId}&` +
+                    `q=${encodeURIComponent(query)}&` +
+                    `type=video&` +
+                    `maxResults=5&` +
+                    `order=date&` +
+                    `key=${YOUTUBE_API_KEY}`
+                );
 
-            if (!response.ok) {
-                throw new Error(`YouTube API error: ${response.status}`);
-            }
-
-            const data = await response.json();
-            
-            for (const item of data.items) {
-                const highlight = parseVideoData(item, week);
-                if (highlight && !highlights.find(h => h.videoId === highlight.videoId)) {
-                    highlights.push(highlight);
+                if (!response.ok) {
+                    throw new Error(`YouTube API error: ${response.status}`);
                 }
+
+                const data = await response.json();
+                
+                for (const item of data.items) {
+                    const highlight = parseVideoData(item, week);
+                    if (highlight && !highlights.find(h => h.videoId === highlight.videoId)) {
+                        highlights.push(highlight);
+                    }
+                }
+            } catch (error) {
+                console.error(`Error searching for query "${query}" in channel ${channelId}:`, error);
             }
-        } catch (error) {
-            console.error(`Error searching for query "${query}":`, error);
         }
     }
 
