@@ -128,7 +128,7 @@ async function searchHighlightsForWeek(week) {
                 
                 for (const item of data.items) {
                     const highlight = parseVideoData(item, week);
-                    if (highlight && !highlights.find(h => h.videoId === highlight.videoId)) {
+                    if (highlight) {
                         highlights.push(highlight);
                     }
                 }
