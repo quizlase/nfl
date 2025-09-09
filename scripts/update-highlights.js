@@ -20,10 +20,16 @@ const NFL_TEAMS = [
 // Current NFL season week (this would need to be updated based on current date)
 const getCurrentWeek = () => {
     const now = new Date();
-    const seasonStart = new Date('2024-09-05'); // Approximate start of 2024 season
+    // 2024 NFL season started September 5, 2024
+    const seasonStart = new Date('2024-09-05');
     const weeksSinceStart = Math.floor((now - seasonStart) / (7 * 24 * 60 * 60 * 1000));
     const week = Math.min(Math.max(weeksSinceStart + 1, 1), 18); // NFL regular season is 18 weeks
+    
+    console.log('Current date:', now.toISOString());
+    console.log('Season start:', seasonStart.toISOString());
+    console.log('Weeks since start:', weeksSinceStart);
     console.log('Current calculated week:', week);
+    
     return week;
 };
 
@@ -50,7 +56,13 @@ async function searchNFLHighlights() {
         }
     }
 
-    return highlights;
+    // Remove duplicates based on videoId
+    const uniqueHighlights = highlights.filter((highlight, index, self) => 
+        index === self.findIndex(h => h.videoId === highlight.videoId)
+    );
+
+    console.log(`Found ${highlights.length} total highlights, ${uniqueHighlights.length} unique`);
+    return uniqueHighlights;
 }
 
 async function searchHighlightsForWeek(week) {
@@ -58,9 +70,11 @@ async function searchHighlightsForWeek(week) {
     
     // Generate search queries for different team combinations
     const searchQueries = [
-        `NFL highlights week ${week}`,
-        `NFL week ${week} highlights`,
-        `NFL highlights ${week}`
+        `NFL highlights week ${week} 2024`,
+        `NFL week ${week} highlights 2024`,
+        `NFL highlights ${week} 2024`,
+        `NFL week ${week} 2024`,
+        `NFL 2024 week ${week} highlights`
     ];
 
     for (const query of searchQueries) {
@@ -130,10 +144,86 @@ function extractTeamsFromText(text) {
     const foundTeams = [];
     const lowerText = text.toLowerCase();
     
+    // Also check for common team abbreviations and variations
+    const teamVariations = {
+        'kansas city': 'Kansas City Chiefs',
+        'chiefs': 'Kansas City Chiefs',
+        'buffalo': 'Buffalo Bills',
+        'bills': 'Buffalo Bills',
+        'dallas': 'Dallas Cowboys',
+        'cowboys': 'Dallas Cowboys',
+        'green bay': 'Green Bay Packers',
+        'packers': 'Green Bay Packers',
+        'philadelphia': 'Philadelphia Eagles',
+        'eagles': 'Philadelphia Eagles',
+        'san francisco': 'San Francisco 49ers',
+        '49ers': 'San Francisco 49ers',
+        'miami': 'Miami Dolphins',
+        'dolphins': 'Miami Dolphins',
+        'detroit': 'Detroit Lions',
+        'lions': 'Detroit Lions',
+        'baltimore': 'Baltimore Ravens',
+        'ravens': 'Baltimore Ravens',
+        'houston': 'Houston Texans',
+        'texans': 'Houston Texans',
+        'cincinnati': 'Cincinnati Bengals',
+        'bengals': 'Cincinnati Bengals',
+        'cleveland': 'Cleveland Browns',
+        'browns': 'Cleveland Browns',
+        'pittsburgh': 'Pittsburgh Steelers',
+        'steelers': 'Pittsburgh Steelers',
+        'indianapolis': 'Indianapolis Colts',
+        'colts': 'Indianapolis Colts',
+        'jacksonville': 'Jacksonville Jaguars',
+        'jaguars': 'Jacksonville Jaguars',
+        'tennessee': 'Tennessee Titans',
+        'titans': 'Tennessee Titans',
+        'denver': 'Denver Broncos',
+        'broncos': 'Denver Broncos',
+        'las vegas': 'Las Vegas Raiders',
+        'raiders': 'Las Vegas Raiders',
+        'los angeles chargers': 'Los Angeles Chargers',
+        'chargers': 'Los Angeles Chargers',
+        'los angeles rams': 'Los Angeles Rams',
+        'rams': 'Los Angeles Rams',
+        'atlanta': 'Atlanta Falcons',
+        'falcons': 'Atlanta Falcons',
+        'carolina': 'Carolina Panthers',
+        'panthers': 'Carolina Panthers',
+        'chicago': 'Chicago Bears',
+        'bears': 'Chicago Bears',
+        'minnesota': 'Minnesota Vikings',
+        'vikings': 'Minnesota Vikings',
+        'new orleans': 'New Orleans Saints',
+        'saints': 'New Orleans Saints',
+        'new york giants': 'New York Giants',
+        'giants': 'New York Giants',
+        'new york jets': 'New York Jets',
+        'jets': 'New York Jets',
+        'tampa bay': 'Tampa Bay Buccaneers',
+        'buccaneers': 'Tampa Bay Buccaneers',
+        'arizona': 'Arizona Cardinals',
+        'cardinals': 'Arizona Cardinals',
+        'seattle': 'Seattle Seahawks',
+        'seahawks': 'Seattle Seahawks',
+        'washington': 'Washington Commanders',
+        'commanders': 'Washington Commanders',
+        'new england': 'New England Patriots',
+        'patriots': 'New England Patriots'
+    };
+    
+    // First check for full team names
     for (const team of NFL_TEAMS) {
         const teamLower = team.toLowerCase();
         if (lowerText.includes(teamLower)) {
             foundTeams.push(team);
+        }
+    }
+    
+    // Then check for variations
+    for (const [variation, teamName] of Object.entries(teamVariations)) {
+        if (lowerText.includes(variation) && !foundTeams.includes(teamName)) {
+            foundTeams.push(teamName);
         }
     }
     
