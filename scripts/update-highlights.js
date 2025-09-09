@@ -22,12 +22,20 @@ const NFL_TEAMS = [
     'Seattle Seahawks', 'Tampa Bay Buccaneers', 'Tennessee Titans', 'Washington Commanders'
 ];
 
-// Current NFL season week (this would need to be updated based on current date)
+// Current NFL season week (2025 season only)
 const getCurrentWeek = () => {
     const now = new Date();
-    const seasonStart = new Date('2025-09-05'); // Approximate start of 2025 season
+    const seasonStart = new Date('2025-09-05'); // Start of 2025 season
     const weeksSinceStart = Math.floor((now - seasonStart) / (7 * 24 * 60 * 60 * 1000));
     return Math.min(Math.max(weeksSinceStart + 1, 1), 18); // NFL regular season is 18 weeks
+};
+
+// Check if date is in 2025 season
+const is2025Season = (dateString) => {
+    const date = new Date(dateString);
+    const year = date.getFullYear();
+    const month = date.getMonth() + 1; // getMonth() returns 0-11
+    return year === 2025 && month >= 9; // September 2025 onwards
 };
 
 // Search for NFL highlights on YouTube
@@ -37,17 +45,8 @@ async function searchNFLHighlights() {
     console.log('API Key first 10 chars:', YOUTUBE_API_KEY ? YOUTUBE_API_KEY.substring(0, 10) + '...' : 'N/A');
     
     if (!YOUTUBE_API_KEY) {
-        console.log('No YouTube API key provided, using demo data');
-        const demoData = getDemoHighlights();
-        // Write demo data to file
-        const highlightsData = {
-            lastUpdated: new Date().toISOString(),
-            highlights: demoData
-        };
-        const filePath = path.join(__dirname, '..', 'highlights.json');
-        fs.writeFileSync(filePath, JSON.stringify(highlightsData, null, 2));
-        console.log(`Updated highlights.json with ${demoData.length} demo highlights`);
-        return demoData;
+        console.log('No YouTube API key provided, returning empty array');
+        return [];
     }
 
     const highlights = [];
@@ -70,25 +69,22 @@ async function searchNFLHighlights() {
     
     console.log(`Total highlights found: ${highlights.length}`);
     
-    // If no highlights found and we have an API key, fall back to demo data
-    if (highlights.length === 0 && YOUTUBE_API_KEY) {
-        console.log('No highlights found with API, falling back to demo data');
-        return getDemoHighlights();
-    }
-
+    // Return empty array if no highlights found (don't fall back to demo data)
     return highlights;
 }
 
 async function searchHighlightsForWeek(week) {
     const highlights = [];
     
-    // Generate search queries for different team combinations
+    // Generate search queries for 2025 season only
     const searchQueries = [
         `NFL 2025 Season Week ${week}`,
         `NFL 2025 Week ${week} highlights`,
         `NFL highlights week ${week} 2025`,
         `NFL week ${week} highlights 2025`,
-        `NFL 2025 week ${week} highlights`
+        `NFL 2025 week ${week} highlights`,
+        `NFL 2025 Season Week ${week} Game Highlights`,
+        `NFL 2025 Week ${week} Game Highlights`
     ];
 
     for (const query of searchQueries) {
@@ -131,6 +127,15 @@ function parseVideoData(videoItem, week) {
     const title = snippet.title;
     const description = snippet.description;
     
+    // Extract date from publishedAt
+    const publishedDate = new Date(snippet.publishedAt);
+    const dateString = publishedDate.toISOString().split('T')[0];
+    
+    // Only process videos from 2025 season (September 2025 onwards)
+    if (!is2025Season(dateString)) {
+        return null;
+    }
+    
     // Extract week number from title
     const extractedWeek = extractWeekFromTitle(title);
     const finalWeek = extractedWeek || week; // Use extracted week or fallback to calculated week
@@ -141,10 +146,6 @@ function parseVideoData(videoItem, week) {
     if (teams.length < 2) {
         return null; // Skip if we can't identify two teams
     }
-
-    // Extract date from publishedAt
-    const publishedDate = new Date(snippet.publishedAt);
-    const dateString = publishedDate.toISOString().split('T')[0];
 
     return {
         id: videoItem.id.videoId,
@@ -170,15 +171,28 @@ function extractTeamsFromText(text) {
         const team1 = vsMatch[1].trim();
         const team2 = vsMatch[2].trim();
         
-        // Try to match with known teams
+        // Try to match with known teams - improved matching
         for (const team of NFL_TEAMS) {
-            if (team1.includes(team.split(' ')[0]) || team.includes(team1.split(' ')[0])) {
+            const teamWords = team.toLowerCase().split(' ');
+            const team1Words = team1.toLowerCase().split(' ');
+            
+            // Check if any word from team name matches
+            if (teamWords.some(word => team1Words.some(t1Word => 
+                t1Word.includes(word) || word.includes(t1Word)
+            ))) {
                 foundTeams.push(team);
                 break;
             }
         }
+        
         for (const team of NFL_TEAMS) {
-            if (team2.includes(team.split(' ')[0]) || team.includes(team2.split(' ')[0])) {
+            const teamWords = team.toLowerCase().split(' ');
+            const team2Words = team2.toLowerCase().split(' ');
+            
+            // Check if any word from team name matches
+            if (teamWords.some(word => team2Words.some(t2Word => 
+                t2Word.includes(word) || word.includes(t2Word)
+            ))) {
                 foundTeams.push(team);
                 break;
             }
@@ -347,23 +361,66 @@ function getDemoHighlights() {
     ];
 }
 
+// Load existing highlights from file
+function loadExistingHighlights() {
+    try {
+        const filePath = path.join(__dirname, '..', 'highlights.json');
+        if (fs.existsSync(filePath)) {
+            const data = JSON.parse(fs.readFileSync(filePath, 'utf8'));
+            return data.highlights || [];
+        }
+    } catch (error) {
+        console.log('No existing highlights file found or error reading it');
+    }
+    return [];
+}
+
+// Merge new highlights with existing ones, avoiding duplicates
+function mergeHighlights(existingHighlights, newHighlights) {
+    const existingIds = new Set(existingHighlights.map(h => h.id));
+    const existingVideoIds = new Set(existingHighlights.map(h => h.videoId));
+    
+    // Filter out duplicates based on id or videoId
+    const uniqueNewHighlights = newHighlights.filter(highlight => 
+        !existingIds.has(highlight.id) && !existingVideoIds.has(highlight.videoId)
+    );
+    
+    // Combine existing and new highlights
+    const allHighlights = [...existingHighlights, ...uniqueNewHighlights];
+    
+    // Sort by date (newest first)
+    allHighlights.sort((a, b) => new Date(b.date) - new Date(a.date));
+    
+    return allHighlights;
+}
+
 // Main function to update highlights
 async function updateHighlights() {
     try {
         console.log('Starting highlights update...');
         
-        const highlights = await searchNFLHighlights();
+        // Load existing highlights
+        const existingHighlights = loadExistingHighlights();
+        console.log(`Found ${existingHighlights.length} existing highlights`);
+        
+        // Search for new highlights
+        const newHighlights = await searchNFLHighlights();
+        console.log(`Found ${newHighlights.length} new highlights`);
+        
+        // Merge highlights (avoiding duplicates)
+        const allHighlights = mergeHighlights(existingHighlights, newHighlights);
+        console.log(`Total highlights after merge: ${allHighlights.length}`);
         
         const highlightsData = {
             lastUpdated: new Date().toISOString(),
-            highlights: highlights
+            highlights: allHighlights
         };
 
         // Write to highlights.json
         const filePath = path.join(__dirname, '..', 'highlights.json');
         fs.writeFileSync(filePath, JSON.stringify(highlightsData, null, 2));
         
-        console.log(`Updated highlights.json with ${highlights.length} highlights`);
+        console.log(`Updated highlights.json with ${allHighlights.length} highlights`);
         console.log('Highlights update completed successfully');
         
     } catch (error) {
