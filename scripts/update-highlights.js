@@ -25,24 +25,9 @@ const NFL_TEAMS = [
 // Current NFL season week (this would need to be updated based on current date)
 const getCurrentWeek = () => {
     const now = new Date();
-    // 2024 NFL season started September 5, 2024 (Week 1)
-    const seasonStart = new Date('2024-09-05');
-    
-    // Calculate days since season start
-    const daysSinceStart = Math.floor((now - seasonStart) / (24 * 60 * 60 * 1000));
-    
-    // Each NFL week starts on Tuesday and ends on Monday
-    // Week 1: Sep 5-9, Week 2: Sep 10-16, etc.
-    const week = Math.floor(daysSinceStart / 7) + 1;
-    const finalWeek = Math.min(Math.max(week, 1), 18); // NFL regular season is 18 weeks
-    
-    console.log('Current date:', now.toISOString());
-    console.log('Season start:', seasonStart.toISOString());
-    console.log('Days since start:', daysSinceStart);
-    console.log('Calculated week:', week);
-    console.log('Final week:', finalWeek);
-    
-    return finalWeek;
+    const seasonStart = new Date('2024-09-05'); // Approximate start of 2024 season
+    const weeksSinceStart = Math.floor((now - seasonStart) / (7 * 24 * 60 * 60 * 1000));
+    return Math.min(Math.max(weeksSinceStart + 1, 1), 18); // NFL regular season is 18 weeks
 };
 
 // Search for NFL highlights on YouTube
@@ -70,7 +55,6 @@ async function searchNFLHighlights() {
         }
     }
 
-    console.log(`Total highlights before deduplication: ${highlights.length}`);
 
     // Remove duplicates based on videoId and also by team combination + week
     const seenVideoIds = new Set();
@@ -148,18 +132,14 @@ function parseVideoData(videoItem, week) {
     const title = snippet.title;
     const description = snippet.description;
     
-    console.log(`Processing video: "${title}"`);
-    
     // Extract week number from title
     const extractedWeek = extractWeekFromTitle(title);
     const finalWeek = extractedWeek || week; // Use extracted week or fallback to calculated week
     
     // Extract team names from title and description
     const teams = extractTeamsFromText(title + ' ' + description);
-    console.log(`Found teams: ${teams.join(', ')}`);
     
     if (teams.length < 2) {
-        console.log(`Skipping video - only found ${teams.length} teams: ${teams.join(', ')}`);
         return null; // Skip if we can't identify two teams
     }
 
@@ -184,8 +164,6 @@ function parseVideoData(videoItem, week) {
 function extractTeamsFromText(text) {
     const foundTeams = [];
     const lowerText = text.toLowerCase();
-    
-    console.log(`Extracting teams from: "${text}"`);
     
     // Also check for common team abbreviations and variations
     const teamVariations = {
@@ -278,20 +256,18 @@ function extractWeekFromTitle(title) {
     
     // Look for patterns like "Week 1", "Week 2", etc.
     const weekMatch = lowerTitle.match(/week\s+(\d+)/);
-    if (weekMatch) {
-        const week = parseInt(weekMatch[1]);
-        if (week >= 1 && week <= 18) {
-            console.log(`Extracted week ${week} from title: "${title}"`);
-            return week;
+        if (weekMatch) {
+            const week = parseInt(weekMatch[1]);
+            if (week >= 1 && week <= 18) {
+                return week;
+            }
         }
-    }
     
     // Look for patterns like "W1", "W2", etc.
     const wMatch = lowerTitle.match(/\bw(\d+)\b/);
     if (wMatch) {
         const week = parseInt(wMatch[1]);
         if (week >= 1 && week <= 18) {
-            console.log(`Extracted week ${week} from title: "${title}"`);
             return week;
         }
     }
@@ -301,7 +277,6 @@ function extractWeekFromTitle(title) {
     if (ordinalMatch) {
         const week = parseInt(ordinalMatch[1]);
         if (week >= 1 && week <= 18) {
-            console.log(`Extracted week ${week} from title: "${title}"`);
             return week;
         }
     }
