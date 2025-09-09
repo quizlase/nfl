@@ -22,11 +22,16 @@ const getCurrentWeek = () => {
     const now = new Date();
     const seasonStart = new Date('2024-09-05'); // Approximate start of 2024 season
     const weeksSinceStart = Math.floor((now - seasonStart) / (7 * 24 * 60 * 60 * 1000));
-    return Math.min(Math.max(weeksSinceStart + 1, 1), 18); // NFL regular season is 18 weeks
+    const week = Math.min(Math.max(weeksSinceStart + 1, 1), 18); // NFL regular season is 18 weeks
+    console.log('Current calculated week:', week);
+    return week;
 };
 
 // Search for NFL highlights on YouTube
 async function searchNFLHighlights() {
+    console.log('YouTube API Key present:', !!YOUTUBE_API_KEY);
+    console.log('API Key length:', YOUTUBE_API_KEY ? YOUTUBE_API_KEY.length : 0);
+    
     if (!YOUTUBE_API_KEY) {
         console.log('No YouTube API key provided, using demo data');
         return getDemoHighlights();
