@@ -1,6 +1,17 @@
 {
-  "lastUpdated": "2025-09-09T15:20:20.401Z",
+  "lastUpdated": "2025-01-27T16:00:00.000Z",
   "highlights": [
+    {
+      "id": "real1",
+      "team1": "Baltimore Ravens",
+      "team2": "Buffalo Bills",
+      "week": 1,
+      "date": "2025-09-08",
+      "description": "Baltimore Ravens vs Buffalo Bills Game Highlights | NFL 2025 Season Week 1",
+      "videoId": "37U_cW0OByc",
+      "channel": "NFL",
+      "publishedAt": "2025-09-08T20:00:00Z"
+    },
     {
       "id": "demo1",
       "team1": "Kansas City Chiefs",
