@@ -1,5 +1,5 @@
 {
-  "lastUpdated": "2025-09-09T12:24:58.366Z",
+  "lastUpdated": "2025-09-09T12:40:27.834Z",
   "highlights": [
     {
       "id": "4ClFpGYueUc",
@@ -74,6 +74,18 @@
       "thumbnail": "https://i.ytimg.com/vi/4ClFpGYueUc/mqdefault.jpg"
     },
     {
+      "id": "X25QYbPgarM",
+      "team1": "Baltimore Ravens",
+      "team2": "Buffalo Bills",
+      "week": 16,
+      "date": "2025-09-08",
+      "description": "Baltimore Ravens vs Buffalo Bills | 2025 Week 1 | Gameday Final Reaction",
+      "videoId": "X25QYbPgarM",
+      "channel": "NFL",
+      "publishedAt": "2025-09-08T04:55:28Z",
+      "thumbnail": "https://i.ytimg.com/vi/X25QYbPgarM/mqdefault.jpg"
+    },
+    {
       "id": "lvOdHfaB6RQ",
       "team1": "Houston Texans",
       "team2": "Los Angeles Rams",
@@ -122,30 +134,6 @@
       "thumbnail": "https://i.ytimg.com/vi/HMw8O4yzEiQ/mqdefault.jpg"
     },
     {
-      "id": "X25QYbPgarM",
-      "team1": "Baltimore Ravens",
-      "team2": "Buffalo Bills",
-      "week": 16,
-      "date": "2025-09-08",
-      "description": "Baltimore Ravens vs Buffalo Bills | 2025 Week 1 | Gameday Final Reaction",
-      "videoId": "X25QYbPgarM",
-      "channel": "NFL",
-      "publishedAt": "2025-09-08T04:55:28Z",
-      "thumbnail": "https://i.ytimg.com/vi/X25QYbPgarM/mqdefault.jpg"
-    },
-    {
-      "id": "4ClFpGYueUc",
-      "team1": "Kansas City Chiefs",
-      "team2": "Los Angeles Chargers",
-      "week": 17,
-      "date": "2025-09-08",
-      "description": "Kansas City Chiefs vs. Los Angeles Chargers FULL GAME | NFL 2025 Season Week 1",
-      "videoId": "4ClFpGYueUc",
-      "channel": "NFL",
-      "publishedAt": "2025-09-08T05:02:58Z",
-      "thumbnail": "https://i.ytimg.com/vi/4ClFpGYueUc/mqdefault.jpg"
-    },
-    {
       "id": "fw1S3xgiZSw",
       "team1": "Denver Broncos",
       "team2": "Tennessee Titans",
@@ -180,6 +168,30 @@
       "channel": "NFL",
       "publishedAt": "2025-09-07T23:30:59Z",
       "thumbnail": "https://i.ytimg.com/vi/zr1dq7edoMs/mqdefault.jpg"
+    },
+    {
+      "id": "JcRpVsFuGKw",
+      "team1": "Indianapolis Colts",
+      "team2": "Miami Dolphins",
+      "week": 17,
+      "date": "2025-09-07",
+      "description": "Miami Dolphins vs Indianapolis Colts Game Highlights | 2025 NFL Season Week 1",
+      "videoId": "JcRpVsFuGKw",
+      "channel": "NFL",
+      "publishedAt": "2025-09-07T20:31:45Z",
+      "thumbnail": "https://i.ytimg.com/vi/JcRpVsFuGKw/mqdefault.jpg"
+    },
+    {
+      "id": "4ClFpGYueUc",
+      "team1": "Kansas City Chiefs",
+      "team2": "Los Angeles Chargers",
+      "week": 17,
+      "date": "2025-09-08",
+      "description": "Kansas City Chiefs vs. Los Angeles Chargers FULL GAME | NFL 2025 Season Week 1",
+      "videoId": "4ClFpGYueUc",
+      "channel": "NFL",
+      "publishedAt": "2025-09-08T05:02:58Z",
+      "thumbnail": "https://i.ytimg.com/vi/4ClFpGYueUc/mqdefault.jpg"
     },
     {
       "id": "kapv4nxG0eI",
@@ -230,16 +242,16 @@
       "thumbnail": "https://i.ytimg.com/vi/lvOdHfaB6RQ/mqdefault.jpg"
     },
     {
-      "id": "kapv4nxG0eI",
-      "team1": "New York Jets",
-      "team2": "Pittsburgh Steelers",
+      "id": "JcRpVsFuGKw",
+      "team1": "Indianapolis Colts",
+      "team2": "Miami Dolphins",
       "week": 18,
       "date": "2025-09-07",
-      "description": "Pittsburgh Steelers vs. New York Jets Game Highlights | NFL 2025 Season Week 1",
-      "videoId": "kapv4nxG0eI",
+      "description": "Miami Dolphins vs Indianapolis Colts Game Highlights | 2025 NFL Season Week 1",
+      "videoId": "JcRpVsFuGKw",
       "channel": "NFL",
-      "publishedAt": "2025-09-07T20:28:16Z",
-      "thumbnail": "https://i.ytimg.com/vi/kapv4nxG0eI/mqdefault.jpg"
+      "publishedAt": "2025-09-07T20:31:45Z",
+      "thumbnail": "https://i.ytimg.com/vi/JcRpVsFuGKw/mqdefault.jpg"
     }
   ]
 }
