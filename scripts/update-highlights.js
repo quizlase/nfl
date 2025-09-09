@@ -25,7 +25,7 @@ const NFL_TEAMS = [
 // Current NFL season week (this would need to be updated based on current date)
 const getCurrentWeek = () => {
     const now = new Date();
-    const seasonStart = new Date('2025-09-05'); // Approximate start of 2025 season
+    const seasonStart = new Date('2024-09-05'); // Approximate start of 2024 season
     const weeksSinceStart = Math.floor((now - seasonStart) / (7 * 24 * 60 * 60 * 1000));
     return Math.min(Math.max(weeksSinceStart + 1, 1), 18); // NFL regular season is 18 weeks
 };
@@ -69,7 +69,12 @@ async function searchNFLHighlights() {
     }
     
     console.log(`Total highlights found: ${highlights.length}`);
-
+    
+    // If no highlights found and we have an API key, fall back to demo data
+    if (highlights.length === 0 && YOUTUBE_API_KEY) {
+        console.log('No highlights found with API, falling back to demo data');
+        return getDemoHighlights();
+    }
 
     return highlights;
 }
@@ -79,11 +84,11 @@ async function searchHighlightsForWeek(week) {
     
     // Generate search queries for different team combinations
     const searchQueries = [
-        `NFL highlights week ${week} 2025`,
-        `NFL week ${week} highlights 2025`,
-        `NFL highlights ${week} 2025`,
-        `NFL week ${week} 2025`,
-        `NFL 2025 week ${week} highlights`
+        `NFL highlights week ${week} 2024`,
+        `NFL week ${week} highlights 2024`,
+        `NFL highlights ${week} 2024`,
+        `NFL week ${week} 2024`,
+        `NFL 2024 week ${week} highlights`
     ];
 
     for (const query of searchQueries) {
@@ -100,7 +105,9 @@ async function searchHighlightsForWeek(week) {
             );
 
             if (!response.ok) {
-                throw new Error(`YouTube API error: ${response.status}`);
+                const errorData = await response.json().catch(() => ({}));
+                console.error(`YouTube API error ${response.status}:`, errorData);
+                throw new Error(`YouTube API error: ${response.status} - ${errorData.error?.message || 'Unknown error'}`);
             }
 
             const data = await response.json();
