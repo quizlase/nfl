@@ -43,12 +43,10 @@ async function searchNFLHighlights() {
     const highlights = [];
     const currentWeek = getCurrentWeek();
     
-    // Search for highlights from Week 1 to current week
-    for (let week = 1; week <= currentWeek; week++) {
+    // Search for highlights from the last 4 weeks
+    for (let week = Math.max(1, currentWeek - 3); week <= currentWeek; week++) {
         try {
-            console.log(`Searching for Week ${week} highlights...`);
             const weekHighlights = await searchHighlightsForWeek(week);
-            console.log(`Found ${weekHighlights.length} highlights for Week ${week}`);
             highlights.push(...weekHighlights);
         } catch (error) {
             console.error(`Error searching for week ${week} highlights:`, error);
@@ -56,28 +54,7 @@ async function searchNFLHighlights() {
     }
 
 
-    // Remove duplicates based on videoId and also by team combination + week
-    const seenVideoIds = new Set();
-    const seenTeamCombinations = new Set();
-    const uniqueHighlights = [];
-
-    for (const highlight of highlights) {
-        const teamKey = `${highlight.team1}-${highlight.team2}-${highlight.week}`;
-        const reverseTeamKey = `${highlight.team2}-${highlight.team1}-${highlight.week}`;
-        
-        // Skip if we've seen this video ID or this team combination for this week
-        if (!seenVideoIds.has(highlight.videoId) && 
-            !seenTeamCombinations.has(teamKey) && 
-            !seenTeamCombinations.has(reverseTeamKey)) {
-            
-            seenVideoIds.add(highlight.videoId);
-            seenTeamCombinations.add(teamKey);
-            uniqueHighlights.push(highlight);
-        }
-    }
-
-    console.log(`Found ${highlights.length} total highlights, ${uniqueHighlights.length} unique`);
-    return uniqueHighlights;
+    return highlights;
 }
 
 async function searchHighlightsForWeek(week) {
@@ -93,34 +70,32 @@ async function searchHighlightsForWeek(week) {
     ];
 
     for (const query of searchQueries) {
-        for (const channelId of NFL_CHANNELS) {
-            try {
-                const response = await fetch(
-                    `https://www.googleapis.com/youtube/v3/search?` +
-                    `part=snippet&` +
-                    `channelId=${channelId}&` +
-                    `q=${encodeURIComponent(query)}&` +
-                    `type=video&` +
-                    `maxResults=5&` +
-                    `order=date&` +
-                    `key=${YOUTUBE_API_KEY}`
-                );
+        try {
+            const response = await fetch(
+                `https://www.googleapis.com/youtube/v3/search?` +
+                `part=snippet&` +
+                `channelId=${NFL_CHANNEL_ID}&` +
+                `q=${encodeURIComponent(query)}&` +
+                `type=video&` +
+                `maxResults=10&` +
+                `order=date&` +
+                `key=${YOUTUBE_API_KEY}`
+            );
 
-                if (!response.ok) {
-                    throw new Error(`YouTube API error: ${response.status}`);
-                }
-
-                const data = await response.json();
-                
-                for (const item of data.items) {
-                    const highlight = parseVideoData(item, week);
-                    if (highlight) {
-                        highlights.push(highlight);
-                    }
-                }
-            } catch (error) {
-                console.error(`Error searching for query "${query}" in channel ${channelId}:`, error);
+            if (!response.ok) {
+                throw new Error(`YouTube API error: ${response.status}`);
             }
+
+            const data = await response.json();
+            
+            for (const item of data.items || []) {
+                const highlight = parseVideoData(item, week);
+                if (highlight && !highlights.find(h => h.videoId === highlight.videoId)) {
+                    highlights.push(highlight);
+                }
+            }
+        } catch (error) {
+            console.error(`Error searching for query "${query}":`, error);
         }
     }
 
