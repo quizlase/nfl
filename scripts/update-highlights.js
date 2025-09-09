@@ -25,7 +25,7 @@ const NFL_TEAMS = [
 // Current NFL season week (this would need to be updated based on current date)
 const getCurrentWeek = () => {
     const now = new Date();
-    const seasonStart = new Date('2024-09-05'); // Approximate start of 2024 season
+    const seasonStart = new Date('2025-09-05'); // Approximate start of 2025 season
     const weeksSinceStart = Math.floor((now - seasonStart) / (7 * 24 * 60 * 60 * 1000));
     return Math.min(Math.max(weeksSinceStart + 1, 1), 18); // NFL regular season is 18 weeks
 };
@@ -34,6 +34,7 @@ const getCurrentWeek = () => {
 async function searchNFLHighlights() {
     console.log('YouTube API Key present:', !!YOUTUBE_API_KEY);
     console.log('API Key length:', YOUTUBE_API_KEY ? YOUTUBE_API_KEY.length : 0);
+    console.log('API Key first 10 chars:', YOUTUBE_API_KEY ? YOUTUBE_API_KEY.substring(0, 10) + '...' : 'N/A');
     
     if (!YOUTUBE_API_KEY) {
         console.log('No YouTube API key provided, using demo data');
@@ -52,15 +53,22 @@ async function searchNFLHighlights() {
     const highlights = [];
     const currentWeek = getCurrentWeek();
     
+    console.log(`Current calculated week: ${currentWeek}`);
+    console.log(`Searching for highlights from weeks ${Math.max(1, currentWeek - 3)} to ${currentWeek}`);
+    
     // Search for highlights from the last 4 weeks
     for (let week = Math.max(1, currentWeek - 3); week <= currentWeek; week++) {
         try {
+            console.log(`Searching for week ${week} highlights...`);
             const weekHighlights = await searchHighlightsForWeek(week);
+            console.log(`Found ${weekHighlights.length} highlights for week ${week}`);
             highlights.push(...weekHighlights);
         } catch (error) {
             console.error(`Error searching for week ${week} highlights:`, error);
         }
     }
+    
+    console.log(`Total highlights found: ${highlights.length}`);
 
 
     return highlights;
@@ -71,11 +79,11 @@ async function searchHighlightsForWeek(week) {
     
     // Generate search queries for different team combinations
     const searchQueries = [
-        `NFL highlights week ${week} 2024`,
-        `NFL week ${week} highlights 2024`,
-        `NFL highlights ${week} 2024`,
-        `NFL week ${week} 2024`,
-        `NFL 2024 week ${week} highlights`
+        `NFL highlights week ${week} 2025`,
+        `NFL week ${week} highlights 2025`,
+        `NFL highlights ${week} 2025`,
+        `NFL week ${week} 2025`,
+        `NFL 2025 week ${week} highlights`
     ];
 
     for (const query of searchQueries) {
