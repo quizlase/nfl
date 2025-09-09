@@ -70,6 +70,8 @@ async function searchNFLHighlights() {
         }
     }
 
+    console.log(`Total highlights before deduplication: ${highlights.length}`);
+
     // Remove duplicates based on videoId and also by team combination + week
     const seenVideoIds = new Set();
     const seenTeamCombinations = new Set();
@@ -146,14 +148,18 @@ function parseVideoData(videoItem, week) {
     const title = snippet.title;
     const description = snippet.description;
     
+    console.log(`Processing video: "${title}"`);
+    
     // Extract week number from title
     const extractedWeek = extractWeekFromTitle(title);
     const finalWeek = extractedWeek || week; // Use extracted week or fallback to calculated week
     
     // Extract team names from title and description
     const teams = extractTeamsFromText(title + ' ' + description);
+    console.log(`Found teams: ${teams.join(', ')}`);
     
     if (teams.length < 2) {
+        console.log(`Skipping video - only found ${teams.length} teams: ${teams.join(', ')}`);
         return null; // Skip if we can't identify two teams
     }
 
@@ -178,6 +184,8 @@ function parseVideoData(videoItem, week) {
 function extractTeamsFromText(text) {
     const foundTeams = [];
     const lowerText = text.toLowerCase();
+    
+    console.log(`Extracting teams from: "${text}"`);
     
     // Also check for common team abbreviations and variations
     const teamVariations = {
