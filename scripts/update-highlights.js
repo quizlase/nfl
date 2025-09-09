@@ -25,7 +25,7 @@ const NFL_TEAMS = [
 // Current NFL season week (this would need to be updated based on current date)
 const getCurrentWeek = () => {
     const now = new Date();
-    const seasonStart = new Date('2024-09-05'); // Approximate start of 2024 season
+    const seasonStart = new Date('2025-09-05'); // Approximate start of 2025 season
     const weeksSinceStart = Math.floor((now - seasonStart) / (7 * 24 * 60 * 60 * 1000));
     return Math.min(Math.max(weeksSinceStart + 1, 1), 18); // NFL regular season is 18 weeks
 };
@@ -84,11 +84,11 @@ async function searchHighlightsForWeek(week) {
     
     // Generate search queries for different team combinations
     const searchQueries = [
-        `NFL highlights week ${week} 2024`,
-        `NFL week ${week} highlights 2024`,
-        `NFL highlights ${week} 2024`,
-        `NFL week ${week} 2024`,
-        `NFL 2024 week ${week} highlights`
+        `NFL 2025 Season Week ${week}`,
+        `NFL 2025 Week ${week} highlights`,
+        `NFL highlights week ${week} 2025`,
+        `NFL week ${week} highlights 2025`,
+        `NFL 2025 week ${week} highlights`
     ];
 
     for (const query of searchQueries) {
@@ -164,6 +164,31 @@ function extractTeamsFromText(text) {
     const foundTeams = [];
     const lowerText = text.toLowerCase();
     
+    // First try to extract "Team vs Team" pattern
+    const vsMatch = text.match(/([A-Za-z\s]+)\s+vs\s+([A-Za-z\s]+)/i);
+    if (vsMatch) {
+        const team1 = vsMatch[1].trim();
+        const team2 = vsMatch[2].trim();
+        
+        // Try to match with known teams
+        for (const team of NFL_TEAMS) {
+            if (team1.includes(team.split(' ')[0]) || team.includes(team1.split(' ')[0])) {
+                foundTeams.push(team);
+                break;
+            }
+        }
+        for (const team of NFL_TEAMS) {
+            if (team2.includes(team.split(' ')[0]) || team.includes(team2.split(' ')[0])) {
+                foundTeams.push(team);
+                break;
+            }
+        }
+        
+        if (foundTeams.length >= 2) {
+            return foundTeams;
+        }
+    }
+    
     // Also check for common team abbreviations and variations
     const teamVariations = {
         'kansas city': 'Kansas City Chiefs',
@@ -184,6 +209,7 @@ function extractTeamsFromText(text) {
         'lions': 'Detroit Lions',
         'baltimore': 'Baltimore Ravens',
         'ravens': 'Baltimore Ravens',
+        'baltimore ravens': 'Baltimore Ravens',
         'houston': 'Houston Texans',
         'texans': 'Houston Texans',
         'cincinnati': 'Cincinnati Bengals',
