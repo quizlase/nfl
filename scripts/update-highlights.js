@@ -37,7 +37,16 @@ async function searchNFLHighlights() {
     
     if (!YOUTUBE_API_KEY) {
         console.log('No YouTube API key provided, using demo data');
-        return getDemoHighlights();
+        const demoData = getDemoHighlights();
+        // Write demo data to file
+        const highlightsData = {
+            lastUpdated: new Date().toISOString(),
+            highlights: demoData
+        };
+        const filePath = path.join(__dirname, '..', 'highlights.json');
+        fs.writeFileSync(filePath, JSON.stringify(highlightsData, null, 2));
+        console.log(`Updated highlights.json with ${demoData.length} demo highlights`);
+        return demoData;
     }
 
     const highlights = [];
