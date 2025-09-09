@@ -2,13 +2,9 @@ name: Update NFL Highlights
 
 on:
   schedule:
-    # Run daily at 6 AM UTC (8 AM CET, 2 AM EST)
-    - cron: '0 6 * * *'
-  workflow_dispatch: # Allow manual trigger
-
-permissions:
-  contents: write
-  pull-requests: write
+    # Kör varje dag kl 14:00 UTC (16:00 svensk tid)
+    - cron: '0 14 * * *'
+  workflow_dispatch: # Tillåt manuell körning
 
 jobs:
   update-highlights:
@@ -17,44 +13,25 @@ jobs:
     steps:
     - name: Checkout repository
       uses: actions/checkout@v4
-      with:
-        token: ${{ secrets.GITHUB_TOKEN }}
-        fetch-depth: 0
-    
+      
     - name: Setup Node.js
       uses: actions/setup-node@v4
       with:
         node-version: '18'
         cache: 'npm'
-        cache-dependency-path: 'package.json'
-    
+        
     - name: Install dependencies
-      run: |
-        if [ -f package-lock.json ]; then
-          npm ci
-        else
-          npm install
-        fi
-    
+      run: npm ci
+      
     - name: Update highlights
       env:
         YOUTUBE_API_KEY: ${{ secrets.YOUTUBE_API_KEY }}
       run: npm run update
-    
-    - name: Check for changes
-      id: verify-changed-files
-      run: |
-        if [ -n "$(git status --porcelain)" ]; then
-          echo "changed=true" >> $GITHUB_OUTPUT
-        else
-          echo "changed=false" >> $GITHUB_OUTPUT
-        fi
-    
+      
     - name: Commit and push changes
-      if: steps.verify-changed-files.outputs.changed == 'true'
       run: |
         git config --local user.email "action@github.com"
         git config --local user.name "GitHub Action"
         git add highlights.json
-        git commit -m "Update NFL highlights - $(date -u +'%Y-%m-%d %H:%M:%S UTC')"
+        git diff --staged --quiet || git commit -m "Auto-update highlights [skip ci]"
         git push
