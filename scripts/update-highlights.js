@@ -146,6 +146,10 @@ function parseVideoData(videoItem, week) {
     const title = snippet.title;
     const description = snippet.description;
     
+    // Extract week number from title
+    const extractedWeek = extractWeekFromTitle(title);
+    const finalWeek = extractedWeek || week; // Use extracted week or fallback to calculated week
+    
     // Extract team names from title and description
     const teams = extractTeamsFromText(title + ' ' + description);
     
@@ -161,7 +165,7 @@ function parseVideoData(videoItem, week) {
         id: videoItem.id.videoId,
         team1: teams[0],
         team2: teams[1],
-        week: week,
+        week: finalWeek,
         date: dateString,
         description: title,
         videoId: videoItem.id.videoId,
@@ -259,6 +263,42 @@ function extractTeamsFromText(text) {
     }
     
     return foundTeams;
+}
+
+function extractWeekFromTitle(title) {
+    const lowerTitle = title.toLowerCase();
+    
+    // Look for patterns like "Week 1", "Week 2", etc.
+    const weekMatch = lowerTitle.match(/week\s+(\d+)/);
+    if (weekMatch) {
+        const week = parseInt(weekMatch[1]);
+        if (week >= 1 && week <= 18) {
+            console.log(`Extracted week ${week} from title: "${title}"`);
+            return week;
+        }
+    }
+    
+    // Look for patterns like "W1", "W2", etc.
+    const wMatch = lowerTitle.match(/\bw(\d+)\b/);
+    if (wMatch) {
+        const week = parseInt(wMatch[1]);
+        if (week >= 1 && week <= 18) {
+            console.log(`Extracted week ${week} from title: "${title}"`);
+            return week;
+        }
+    }
+    
+    // Look for patterns like "1st", "2nd", "3rd", etc.
+    const ordinalMatch = lowerTitle.match(/(\d+)(?:st|nd|rd|th)\s+week/);
+    if (ordinalMatch) {
+        const week = parseInt(ordinalMatch[1]);
+        if (week >= 1 && week <= 18) {
+            console.log(`Extracted week ${week} from title: "${title}"`);
+            return week;
+        }
+    }
+    
+    return null;
 }
 
 function getDemoHighlights() {
