@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NFL Logos Downloader</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .logo-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+        .logo-item {
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+        .logo-item img {
+            max-width: 100px;
+            height: auto;
+            margin-bottom: 10px;
+        }
+        .download-btn {
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 4px;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+        }
+        .download-btn:hover {
+            background: #0056b3;
+        }
+        .instructions {
+            background: #e7f3ff;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+    <h1>NFL Team Logos Downloader</h1>
+    
+    <div class="instructions">
+        <h3>Instructions:</h3>
+        <ol>
+            <li>Right-click on each logo below</li>
+            <li>Select "Save image as..." or "Save picture as..."</li>
+            <li>Save to the <code>assets/logos/</code> folder</li>
+            <li>Name the files as: <code>team-name.svg</code> (e.g., kansas-city-chiefs.svg)</li>
+        </ol>
+    </div>
+
+    <div class="logo-grid" id="logoGrid">
+        <!-- Logos will be loaded here -->
+    </div>
+
+    <script>
+        const teams = [
+            { name: "Arizona Cardinals", slug: "arizona-cardinals" },
+            { name: "Atlanta Falcons", slug: "atlanta-falcons" },
+            { name: "Baltimore Ravens", slug: "baltimore-ravens" },
+            { name: "Buffalo Bills", slug: "buffalo-bills" },
+            { name: "Carolina Panthers", slug: "carolina-panthers" },
+            { name: "Chicago Bears", slug: "chicago-bears" },
+            { name: "Cincinnati Bengals", slug: "cincinnati-bengals" },
+            { name: "Cleveland Browns", slug: "cleveland-browns" },
+            { name: "Dallas Cowboys", slug: "dallas-cowboys" },
+            { name: "Denver Broncos", slug: "denver-broncos" },
+            { name: "Detroit Lions", slug: "detroit-lions" },
+            { name: "Green Bay Packers", slug: "green-bay-packers" },
+            { name: "Houston Texans", slug: "houston-texans" },
+            { name: "Indianapolis Colts", slug: "indianapolis-colts" },
+            { name: "Jacksonville Jaguars", slug: "jacksonville-jaguars" },
+            { name: "Kansas City Chiefs", slug: "kansas-city-chiefs" },
+            { name: "Las Vegas Raiders", slug: "las-vegas-raiders" },
+            { name: "Los Angeles Chargers", slug: "los-angeles-chargers" },
+            { name: "Los Angeles Rams", slug: "los-angeles-rams" },
+            { name: "Miami Dolphins", slug: "miami-dolphins" },
+            { name: "Minnesota Vikings", slug: "minnesota-vikings" },
+            { name: "New England Patriots", slug: "new-england-patriots" },
+            { name: "New Orleans Saints", slug: "new-orleans-saints" },
+            { name: "New York Giants", slug: "new-york-giants" },
+            { name: "New York Jets", slug: "new-york-jets" },
+            { name: "Philadelphia Eagles", slug: "philadelphia-eagles" },
+            { name: "Pittsburgh Steelers", slug: "pittsburgh-steelers" },
+            { name: "San Francisco 49ers", slug: "san-francisco-49ers" },
+            { name: "Seattle Seahawks", slug: "seattle-seahawks" },
+            { name: "Tampa Bay Buccaneers", slug: "tampa-bay-buccaneers" },
+            { name: "Tennessee Titans", slug: "tennessee-titans" },
+            { name: "Washington Commanders", slug: "washington-commanders" }
+        ];
+
+        const logoGrid = document.getElementById('logoGrid');
+        
+        teams.forEach(team => {
+            const logoItem = document.createElement('div');
+            logoItem.className = 'logo-item';
+            
+            // Try multiple logo sources that actually work
+            const logoUrls = [
+                `https://a.espncdn.com/i/teamlogos/nfl/500/${team.slug}.png`,
+                `https://cdn.freebiesupply.com/logos/large/2x/${team.slug}-logo-svg-vector.svg`,
+                `https://logos-world.net/wp-content/uploads/2020/05/${team.name.replace(/\s+/g, '-')}-Logo.png`,
+                `https://www.nfl.com/_next/image?url=https%3A%2F%2Fstatic.www.nfl.com%2Fimage%2Fprivate%2Ff_auto%2Fleague%2F${team.slug}&w=256&q=75`
+            ];
+            
+            logoItem.innerHTML = `
+                <div style="margin-bottom: 10px;">
+                    <img src="${logoUrls[0]}" alt="${team.name}" style="max-width: 100px; height: auto;" 
+                         onerror="tryNextLogo(this, '${team.slug}', ${JSON.stringify(logoUrls)})">
+                </div>
+                <h4>${team.name}</h4>
+                <p>Save as: ${team.slug}.svg</p>
+                <button class="download-btn" onclick="downloadLogo('${team.slug}', '${team.name}')">Download Logo</button>
+            `;
+            
+            logoGrid.appendChild(logoItem);
+        });
+
+        function tryNextLogo(img, slug, urls) {
+            const currentSrc = img.src;
+            const currentIndex = urls.indexOf(currentSrc);
+            
+            if (currentIndex < urls.length - 1) {
+                img.src = urls[currentIndex + 1];
+            } else {
+                // If all URLs fail, show a placeholder
+                img.style.display = 'none';
+                img.parentNode.innerHTML = `
+                    <div style="width: 100px; height: 100px; background: #f0f0f0; border: 2px dashed #ccc; display: flex; align-items: center; justify-content: center; color: #666;">
+                        No Logo Found
+                    </div>
+                `;
+            }
+        }
+
+        function downloadLogo(slug, name) {
+            // Try to download from working URLs
+            const urls = [
+                `https://a.espncdn.com/i/teamlogos/nfl/500/${slug}.png`,
+                `https://cdn.freebiesupply.com/logos/large/2x/${slug}-logo-svg-vector.svg`,
+                `https://logos-world.net/wp-content/uploads/2020/05/${name.replace(/\s+/g, '-')}-Logo.png`
+            ];
+            
+            // Create download link
+            const link = document.createElement('a');
+            link.href = urls[0];
+            link.download = `${slug}.png`;
+            link.target = '_blank';
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NFL Highlights - Spoiler-Free</title>
+    <link rel="stylesheet" href="assets/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <header class="header">
+        <div class="container">
+            <h1 class="logo">
+                NFL Highlights
+            </h1>
+            <p class="subtitle">Spoiler-free highlights from official NFL channels</p>
+        </div>
+    </header>
+
+    <main class="main">
+        <div class="container">
+            <div class="filter-toggle">
+                <button id="filterToggle" class="filter-toggle-btn">
+                    <i class="fas fa-filter"></i>
+                    Filter
+                    <i class="fas fa-chevron-down"></i>
+                </button>
+            </div>
+            
+            <div class="filters" id="filters" style="display: none;">
+                <div class="filter-group">
+                    <label for="teamFilter">Filter by team:</label>
+                    <select id="teamFilter" class="filter-select">
+                        <option value="">All teams</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label for="weekFilter">Filter by week:</label>
+                    <select id="weekFilter" class="filter-select">
+                        <option value="">All weeks</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label for="sortBy">Sort by:</label>
+                    <select id="sortBy" class="filter-select">
+                        <option value="date-desc">Date (newest first)</option>
+                        <option value="date-asc">Date (oldest first)</option>
+                        <option value="week-desc">Week (highest first)</option>
+                        <option value="week-asc">Week (lowest first)</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="loading" id="loading">
+                <i class="fas fa-spinner fa-spin"></i>
+                <p>Loading highlights...</p>
+            </div>
+
+            <div class="highlights-grid" id="highlightsGrid">
+                <!-- Highlights will be added here dynamically -->
+            </div>
+
+            <div class="no-results" id="noResults" style="display: none;">
+                <i class="fas fa-search"></i>
+                <h3>No highlights found</h3>
+                <p>Try changing your filters or come back later for new highlights.</p>
+            </div>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2024 NFL Highlights. Updated automatically daily.</p>
+            <p>Data from official NFL YouTube channels</p>
+        </div>
+    </footer>
+
+    <script src="scripts/app.js"></script>
+</body>
+</html>

@@ -1,0 +1,25 @@
+{
+  "name": "nfl-highlights",
+  "version": "1.0.0",
+  "description": "Automatisk NFL highlights hemsida med spoiler-free design",
+  "main": "scripts/update-highlights.js",
+  "scripts": {
+    "update": "node scripts/update-highlights.js",
+    "test": "echo \"No tests specified\" && exit 0"
+  },
+  "keywords": [
+    "nfl",
+    "highlights",
+    "youtube",
+    "sports",
+    "github-pages"
+  ],
+  "author": "NFL Highlights App",
+  "license": "MIT",
+  "dependencies": {
+    "node-fetch": "^2.6.7"
+  },
+  "engines": {
+    "node": ">=14.0.0"
+  }
+}
