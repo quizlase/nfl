@@ -40,6 +40,7 @@ const is2025Season = (dateString) => {
 
 // Search for NFL highlights on YouTube - OPTIMIZED VERSION
 async function searchNFLHighlights() {
+    console.log('=== NFL HIGHLIGHTS SEARCH START ===');
     console.log('YouTube API Key present:', !!YOUTUBE_API_KEY);
     console.log('API Key length:', YOUTUBE_API_KEY ? YOUTUBE_API_KEY.length : 0);
     console.log('API Key first 10 chars:', YOUTUBE_API_KEY ? YOUTUBE_API_KEY.substring(0, 10) + '...' : 'N/A');
@@ -51,13 +52,16 @@ async function searchNFLHighlights() {
 
     const highlights = [];
     const currentWeek = getCurrentWeek();
+    const currentDate = new Date();
     
+    console.log(`Current date: ${currentDate.toISOString()}`);
     console.log(`Current calculated week: ${currentWeek}`);
     console.log(`Searching for highlights from the last 10 days...`);
     
     // Search for highlights from the last 10 days (instead of 4 weeks)
     const tenDaysAgo = new Date();
     tenDaysAgo.setDate(tenDaysAgo.getDate() - 10);
+    console.log(`Searching from: ${tenDaysAgo.toISOString()}`);
     
     // Calculate which weeks to search (last 10 days might span 1-2 weeks)
     const weeksToSearch = [];
@@ -65,10 +69,11 @@ async function searchNFLHighlights() {
         const week = Math.max(1, currentWeek - i);
         weeksToSearch.push(week);
     }
+    console.log(`Weeks to search: ${weeksToSearch.join(', ')}`);
     
     for (const week of weeksToSearch) {
         try {
-            console.log(`Searching for week ${week} highlights...`);
+            console.log(`\n--- Searching for week ${week} highlights ---`);
             
             // First try to find playlist for this week
             const playlistHighlights = await searchPlaylistForWeek(week);
@@ -81,6 +86,7 @@ async function searchNFLHighlights() {
             // Combine results and remove duplicates
             const allWeekHighlights = [...playlistHighlights, ...videoHighlights];
             const uniqueHighlights = removeDuplicateHighlights(allWeekHighlights);
+            console.log(`Unique highlights for week ${week}: ${uniqueHighlights.length}`);
             
             highlights.push(...uniqueHighlights);
         } catch (error) {
@@ -88,7 +94,11 @@ async function searchNFLHighlights() {
         }
     }
     
+    console.log(`\n=== SEARCH COMPLETE ===`);
     console.log(`Total highlights found: ${highlights.length}`);
+    if (highlights.length > 0) {
+        console.log('Sample highlight:', JSON.stringify(highlights[0], null, 2));
+    }
     
     return highlights;
 }
@@ -100,6 +110,7 @@ async function searchPlaylistForWeek(week) {
     try {
         // Search for playlists with "Week X Game Recaps" pattern
         const playlistQuery = `Week ${week} Game Recaps`;
+        console.log(`  Searching for playlist: "${playlistQuery}"`);
         
         const response = await fetch(
             `https://www.googleapis.com/youtube/v3/search?` +
@@ -112,25 +123,29 @@ async function searchPlaylistForWeek(week) {
             `key=${YOUTUBE_API_KEY}`
         );
 
+        console.log(`  Playlist search response status: ${response.status}`);
+
         if (!response.ok) {
             const errorData = await response.json().catch(() => ({}));
-            console.error(`YouTube API error ${response.status}:`, errorData);
+            console.error(`  YouTube API error ${response.status}:`, errorData);
             return highlights;
         }
 
         const data = await response.json();
+        console.log(`  Found ${data.items?.length || 0} playlists`);
         
         // Process each playlist found
         for (const playlist of data.items || []) {
-            console.log(`Found playlist: ${playlist.snippet.title}`);
+            console.log(`  Found playlist: ${playlist.snippet.title}`);
             
             // Get videos from this playlist
             const playlistVideos = await getPlaylistVideos(playlist.id.playlistId, week);
+            console.log(`  Got ${playlistVideos.length} videos from playlist`);
             highlights.push(...playlistVideos);
         }
         
     } catch (error) {
-        console.error(`Error searching for playlist "${playlistQuery}":`, error);
+        console.error(`  Error searching for playlist "${playlistQuery}":`, error);
     }
 
     return highlights;
@@ -186,8 +201,11 @@ async function searchHighlightsForWeek(week) {
         `NFL 2025 Week ${week} Game Highlights`
     ];
 
+    console.log(`  Video search queries: ${searchQueries.length}`);
+
     for (const query of searchQueries) {
         try {
+            console.log(`  Searching for: "${query}"`);
             const response = await fetch(
                 `https://www.googleapis.com/youtube/v3/search?` +
                 `part=snippet&` +
@@ -199,25 +217,34 @@ async function searchHighlightsForWeek(week) {
                 `key=${YOUTUBE_API_KEY}`
             );
 
+            console.log(`  Video search response status: ${response.status}`);
+
             if (!response.ok) {
                 const errorData = await response.json().catch(() => ({}));
-                console.error(`YouTube API error ${response.status}:`, errorData);
+                console.error(`  YouTube API error ${response.status}:`, errorData);
                 throw new Error(`YouTube API error: ${response.status} - ${errorData.error?.message || 'Unknown error'}`);
             }
 
             const data = await response.json();
+            console.log(`  Found ${data.items?.length || 0} videos for query: "${query}"`);
             
             for (const item of data.items || []) {
                 const highlight = parseVideoData(item, week);
-                if (highlight && !highlights.find(h => h.videoId === highlight.videoId)) {
-                    highlights.push(highlight);
+                if (highlight) {
+                    console.log(`  Valid highlight found: ${highlight.team1} vs ${highlight.team2} (${highlight.date})`);
+                    if (!highlights.find(h => h.videoId === highlight.videoId)) {
+                        highlights.push(highlight);
+                    }
+                } else {
+                    console.log(`  Skipped video: ${item.snippet?.title} (no teams found or wrong date)`);
                 }
             }
         } catch (error) {
-            console.error(`Error searching for query "${query}":`, error);
+            console.error(`  Error searching for query "${query}":`, error);
         }
     }
 
+    console.log(`  Total video highlights found: ${highlights.length}`);
     return highlights;
 }
 
