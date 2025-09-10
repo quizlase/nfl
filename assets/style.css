@@ -191,7 +191,6 @@ body {
     position: absolute;
     top: 1rem;
     right: 1rem;
-    background: linear-gradient(135deg, #ff6b6b, #ee5a24);
     color: white;
     padding: 0.4rem 0.8rem;
     border-radius: 25px;
@@ -201,6 +200,17 @@ body {
     letter-spacing: 0.5px;
     box-shadow: 0 4px 15px rgba(255, 107, 107, 0.4);
     z-index: 10;
+}
+
+/* Alternating week colors - only two colors */
+.week-badge.week-even {
+    background: linear-gradient(135deg, #ff6b6b, #ee5a24);
+    box-shadow: 0 4px 15px rgba(255, 107, 107, 0.4);
+}
+
+.week-badge.week-odd {
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
 }
 
 .match-header {

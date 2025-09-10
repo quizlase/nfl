@@ -2,8 +2,14 @@ name: Update NFL Highlights
 
 on:
   schedule:
-    # Kör varje dag kl 14:00 UTC (16:00 svensk tid)
-    - cron: '0 14 * * *'
+    # Varje dag kl 05:50 (03:50 UTC)
+    - cron: '50 3 * * *'
+    # Måndagar kl 08:00 (06:00 UTC) och 09:50 (07:50 UTC)
+    - cron: '0 6 * * 1'   # Måndag 08:00
+    - cron: '50 7 * * 1'  # Måndag 09:50
+    # Fredagar kl 08:00 (06:00 UTC) och 09:50 (07:50 UTC)
+    - cron: '0 6 * * 5'   # Fredag 08:00
+    - cron: '50 7 * * 5'  # Fredag 09:50
   workflow_dispatch: # Tillåt manuell körning
 
 jobs:

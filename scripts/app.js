@@ -201,8 +201,10 @@ class NFLHighlightsApp {
         const card = document.createElement('div');
         card.className = 'highlight-card';
 
+        // Determine if week is even or odd for alternating colors
+        const weekClass = highlight.week ? (highlight.week % 2 === 0 ? 'week-even' : 'week-odd') : '';
         const weekBadge = highlight.week ? 
-            `<div class="week-badge">Vecka ${highlight.week}</div>` : '';
+            `<div class="week-badge ${weekClass}">Week ${highlight.week}</div>` : '';
 
         const team1Logo = this.getTeamLogo(highlight.team1);
         const team2Logo = this.getTeamLogo(highlight.team2);
@@ -211,7 +213,7 @@ class NFLHighlightsApp {
         const videoUrl = `https://www.youtube.com/watch?v=${highlight.videoId}`;
 
         card.innerHTML = `
-            <div class="week-badge">Week ${highlight.week}</div>
+            ${weekBadge}
             <div class="match-header">
                 <div class="teams-container">
                     <div class="vs-overlay">VS</div>

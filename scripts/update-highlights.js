@@ -38,7 +38,7 @@ const is2025Season = (dateString) => {
     return year === 2025 && month >= 9; // September 2025 onwards
 };
 
-// Search for NFL highlights on YouTube
+// Search for NFL highlights on YouTube - OPTIMIZED VERSION
 async function searchNFLHighlights() {
     console.log('YouTube API Key present:', !!YOUTUBE_API_KEY);
     console.log('API Key length:', YOUTUBE_API_KEY ? YOUTUBE_API_KEY.length : 0);
@@ -53,15 +53,36 @@ async function searchNFLHighlights() {
     const currentWeek = getCurrentWeek();
     
     console.log(`Current calculated week: ${currentWeek}`);
-    console.log(`Searching for highlights from weeks ${Math.max(1, currentWeek - 3)} to ${currentWeek}`);
+    console.log(`Searching for highlights from the last 10 days...`);
     
-    // Search for highlights from the last 4 weeks
-    for (let week = Math.max(1, currentWeek - 3); week <= currentWeek; week++) {
+    // Search for highlights from the last 10 days (instead of 4 weeks)
+    const tenDaysAgo = new Date();
+    tenDaysAgo.setDate(tenDaysAgo.getDate() - 10);
+    
+    // Calculate which weeks to search (last 10 days might span 1-2 weeks)
+    const weeksToSearch = [];
+    for (let i = 0; i < 2; i++) { // Max 2 weeks for 10 days
+        const week = Math.max(1, currentWeek - i);
+        weeksToSearch.push(week);
+    }
+    
+    for (const week of weeksToSearch) {
         try {
             console.log(`Searching for week ${week} highlights...`);
-            const weekHighlights = await searchHighlightsForWeek(week);
-            console.log(`Found ${weekHighlights.length} highlights for week ${week}`);
-            highlights.push(...weekHighlights);
+            
+            // First try to find playlist for this week
+            const playlistHighlights = await searchPlaylistForWeek(week);
+            console.log(`Found ${playlistHighlights.length} highlights from playlist for week ${week}`);
+            
+            // Also search for individual videos as backup
+            const videoHighlights = await searchHighlightsForWeek(week);
+            console.log(`Found ${videoHighlights.length} highlights from video search for week ${week}`);
+            
+            // Combine results and remove duplicates
+            const allWeekHighlights = [...playlistHighlights, ...videoHighlights];
+            const uniqueHighlights = removeDuplicateHighlights(allWeekHighlights);
+            
+            highlights.push(...uniqueHighlights);
         } catch (error) {
             console.error(`Error searching for week ${week} highlights:`, error);
         }
@@ -69,10 +90,88 @@ async function searchNFLHighlights() {
     
     console.log(`Total highlights found: ${highlights.length}`);
     
-    // Return empty array if no highlights found (don't fall back to demo data)
     return highlights;
 }
 
+// NEW: Search for playlists first (much more efficient)
+async function searchPlaylistForWeek(week) {
+    const highlights = [];
+    
+    try {
+        // Search for playlists with "Week X Game Recaps" pattern
+        const playlistQuery = `Week ${week} Game Recaps`;
+        
+        const response = await fetch(
+            `https://www.googleapis.com/youtube/v3/search?` +
+            `part=snippet&` +
+            `channelId=${NFL_CHANNEL_ID}&` +
+            `q=${encodeURIComponent(playlistQuery)}&` +
+            `type=playlist&` +
+            `maxResults=5&` +
+            `order=date&` +
+            `key=${YOUTUBE_API_KEY}`
+        );
+
+        if (!response.ok) {
+            const errorData = await response.json().catch(() => ({}));
+            console.error(`YouTube API error ${response.status}:`, errorData);
+            return highlights;
+        }
+
+        const data = await response.json();
+        
+        // Process each playlist found
+        for (const playlist of data.items || []) {
+            console.log(`Found playlist: ${playlist.snippet.title}`);
+            
+            // Get videos from this playlist
+            const playlistVideos = await getPlaylistVideos(playlist.id.playlistId, week);
+            highlights.push(...playlistVideos);
+        }
+        
+    } catch (error) {
+        console.error(`Error searching for playlist "${playlistQuery}":`, error);
+    }
+
+    return highlights;
+}
+
+// NEW: Get videos from a specific playlist
+async function getPlaylistVideos(playlistId, week) {
+    const highlights = [];
+    
+    try {
+        const response = await fetch(
+            `https://www.googleapis.com/youtube/v3/playlistItems?` +
+            `part=snippet&` +
+            `playlistId=${playlistId}&` +
+            `maxResults=50&` +
+            `key=${YOUTUBE_API_KEY}`
+        );
+
+        if (!response.ok) {
+            const errorData = await response.json().catch(() => ({}));
+            console.error(`YouTube API error ${response.status}:`, errorData);
+            return highlights;
+        }
+
+        const data = await response.json();
+        
+        for (const item of data.items || []) {
+            const highlight = parsePlaylistVideoData(item, week);
+            if (highlight) {
+                highlights.push(highlight);
+            }
+        }
+        
+    } catch (error) {
+        console.error(`Error getting playlist videos for ${playlistId}:`, error);
+    }
+
+    return highlights;
+}
+
+// UPDATED: Video search (simplified for 10 days)
 async function searchHighlightsForWeek(week) {
     const highlights = [];
     
@@ -120,6 +219,64 @@ async function searchHighlightsForWeek(week) {
     }
 
     return highlights;
+}
+
+// NEW: Parse playlist video data
+function parsePlaylistVideoData(playlistItem, week) {
+    const snippet = playlistItem.snippet;
+    const resourceId = playlistItem.resourceId;
+    
+    if (!snippet || !resourceId) {
+        return null;
+    }
+    
+    const title = snippet.title;
+    const description = snippet.description || '';
+    
+    // Extract date from publishedAt
+    const publishedDate = new Date(snippet.publishedAt);
+    const dateString = publishedDate.toISOString().split('T')[0];
+    
+    // Only process videos from 2025 season (September 2025 onwards)
+    if (!is2025Season(dateString)) {
+        return null;
+    }
+    
+    // Extract week number from title
+    const extractedWeek = extractWeekFromTitle(title);
+    const finalWeek = extractedWeek || week;
+    
+    // Extract team names from title and description
+    const teams = extractTeamsFromText(title + ' ' + description);
+    
+    if (teams.length < 2) {
+        return null;
+    }
+
+    return {
+        id: resourceId.videoId,
+        team1: teams[0],
+        team2: teams[1],
+        week: finalWeek,
+        date: dateString,
+        description: title,
+        videoId: resourceId.videoId,
+        channel: 'NFL',
+        publishedAt: snippet.publishedAt,
+        thumbnail: snippet.thumbnails?.medium?.url
+    };
+}
+
+// NEW: Remove duplicate highlights based on videoId
+function removeDuplicateHighlights(highlights) {
+    const seen = new Set();
+    return highlights.filter(highlight => {
+        if (seen.has(highlight.videoId)) {
+            return false;
+        }
+        seen.add(highlight.videoId);
+        return true;
+    });
 }
 
 function parseVideoData(videoItem, week) {
