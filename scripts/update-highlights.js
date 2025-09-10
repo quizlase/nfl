@@ -313,109 +313,31 @@ function parsePlaylistVideoData(playlistItem, week) {
     };
 }
 
-// NEW: Filter out unwanted video types
+// NEW: Filter for NFL Game Highlights - EXACT MATCH
 function isValidHighlightVideo(title, description) {
     const lowerTitle = title.toLowerCase();
-    const lowerDescription = (description || '').toLowerCase();
-    const combinedText = lowerTitle + ' ' + lowerDescription;
     
     console.log(`    Checking video: "${title}"`);
     
-    // Must contain "Game Highlights" or "Highlights" - be more flexible
-    // Also allow videos that have team vs team pattern even without "highlights"
-    const hasHighlights = combinedText.includes('game highlights') || combinedText.includes('highlights');
-    const hasTeamVsPattern = /vs\.?\s+\w+.*game/i.test(title) || /vs\.?\s+\w+.*highlights/i.test(title);
+    // MUST match NFL's exact format: "Team vs Team Game Highlights | NFL 2025 Season Week X"
+    const nflHighlightPattern = /.*vs.*game highlights.*2025.*week \d+/i;
     
-    if (!hasHighlights && !hasTeamVsPattern) {
-        console.log(`    Rejected: No "Game Highlights", "Highlights", or team vs team pattern in title`);
-        return false;
+    if (nflHighlightPattern.test(title)) {
+        console.log(`    Accepted: Matches NFL highlight format`);
+        return true;
     }
     
-    // Exclude unwanted video types - be more specific
-    const excludePatterns = [
-        'power rankings',
-        'rankings',
-        'full game',
-        'complete game',
-        'reaction',
-        'reactions',
-        'gameday final reaction',
-        'good morning football',
-        'analysis',
-        'breakdown',
-        'recap',
-        'recaps',
-        'preview',
-        'previews',
-        'prediction',
-        'predictions',
-        'draft',
-        'draft picks',
-        'free agency',
-        'trade',
-        'trades',
-        'injury',
-        'injuries',
-        'news',
-        'update',
-        'updates',
-        'press conference',
-        'press conferences',
-        'interview',
-        'interviews',
-        'mic\'d up',
-        'micd up',
-        'sound fx',
-        'sound effects',
-        'top 10',
-        'top plays',
-        'best plays',
-        'worst plays',
-        'bloopers',
-        'funny moments',
-        'celebration',
-        'celebrations',
-        'dance',
-        'dancing',
-        'music',
-        'song',
-        'songs',
-        'commercial',
-        'commercials',
-        'advertisement',
-        'advertisements',
-        'sponsor',
-        'sponsored',
-        'partnership',
-        'partnerships'
-    ];
+    // Also accept: "Team vs Team Game Highlights | 2025 NFL Season Week X"
+    const nflHighlightPattern2 = /.*vs.*game highlights.*2025.*nfl.*season.*week \d+/i;
     
-    for (const pattern of excludePatterns) {
-        if (combinedText.includes(pattern)) {
-            console.log(`    Rejected: Contains "${pattern}"`);
-            return false;
-        }
+    if (nflHighlightPattern2.test(title)) {
+        console.log(`    Accepted: Matches NFL highlight format (variant 2)`);
+        return true;
     }
     
-    // Must contain team names (basic check)
-    const teamKeywords = [
-        'vs', 'versus', 'against', 'at', '@',
-        'chiefs', 'bills', 'cowboys', 'packers', 'eagles', '49ers',
-        'dolphins', 'lions', 'ravens', 'texans', 'bengals', 'browns',
-        'steelers', 'colts', 'jaguars', 'titans', 'broncos', 'raiders',
-        'chargers', 'rams', 'falcons', 'panthers', 'bears', 'vikings',
-        'saints', 'giants', 'jets', 'buccaneers', 'cardinals', 'seahawks',
-        'commanders', 'patriots'
-    ];
-    
-    const hasTeamKeywords = teamKeywords.some(keyword => combinedText.includes(keyword));
-    if (!hasTeamKeywords) {
-        console.log(`    Rejected: No team keywords found`);
-        return false;
-    }
-    
-    console.log(`    Accepted: Valid highlight video`);
-    return true;
+    // Reject everything else
+    console.log(`    Rejected: Does not match NFL highlight format`);
+    return false;
 }
 
 // NEW: Remove duplicate highlights based on videoId
