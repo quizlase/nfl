@@ -1,5 +1,5 @@
 {
-  "lastUpdated": "2025-09-10T07:46:05.223Z",
+  "lastUpdated": "2025-09-10T07:55:50.114Z",
   "highlights": [
     {
       "id": "az5No-PIErY",
@@ -120,39 +120,6 @@
       "channel": "NFL",
       "publishedAt": "2025-09-09T03:54:58Z",
       "thumbnail": "https://i.ytimg.com/vi/LQUNYGKKxsM/mqdefault.jpg"
-    },
-    {
-      "id": "demo3",
-      "team1": "San Francisco 49ers",
-      "team2": "Detroit Lions",
-      "week": 17,
-      "date": "2024-01-28",
-      "description": "NFC Championship - San Francisco 49ers vs Detroit Lions",
-      "videoId": "dQw4w9WgXcQ",
-      "channel": "NFL",
-      "publishedAt": "2024-01-28T20:00:00Z"
-    },
-    {
-      "id": "demo2",
-      "team1": "Dallas Cowboys",
-      "team2": "Green Bay Packers",
-      "week": 18,
-      "date": "2024-01-14",
-      "description": "Wild Card Round - Dallas Cowboys vs Green Bay Packers",
-      "videoId": "dQw4w9WgXcQ",
-      "channel": "NFL",
-      "publishedAt": "2024-01-14T20:00:00Z"
-    },
-    {
-      "id": "demo1",
-      "team1": "Kansas City Chiefs",
-      "team2": "Buffalo Bills",
-      "week": 18,
-      "date": "2024-01-07",
-      "description": "Wild Card Round - Kansas City Chiefs vs Buffalo Bills",
-      "videoId": "dQw4w9WgXcQ",
-      "channel": "NFL",
-      "publishedAt": "2024-01-07T20:00:00Z"
     }
   ]
 }
