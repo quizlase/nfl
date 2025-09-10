@@ -108,44 +108,52 @@ async function searchPlaylistForWeek(week) {
     const highlights = [];
     
     try {
-        // Search for playlists with "Week X Game Recaps" pattern
-        const playlistQuery = `Week ${week} Game Recaps`;
-        console.log(`  Searching for playlist: "${playlistQuery}"`);
+        // Search for multiple playlist patterns
+        const playlistQueries = [
+            `Week ${week} Game Recaps`,
+            `Week ${week} Game Highlights`,
+            `NFL 2025 Week ${week} Game Highlights`,
+            `NFL 2025 Season Week ${week} Game Highlights`
+        ];
         
-        const response = await fetch(
-            `https://www.googleapis.com/youtube/v3/search?` +
-            `part=snippet&` +
-            `channelId=${NFL_CHANNEL_ID}&` +
-            `q=${encodeURIComponent(playlistQuery)}&` +
-            `type=playlist&` +
-            `maxResults=5&` +
-            `order=date&` +
-            `key=${YOUTUBE_API_KEY}`
-        );
-
-        console.log(`  Playlist search response status: ${response.status}`);
-
-        if (!response.ok) {
-            const errorData = await response.json().catch(() => ({}));
-            console.error(`  YouTube API error ${response.status}:`, errorData);
-            return highlights;
-        }
-
-        const data = await response.json();
-        console.log(`  Found ${data.items?.length || 0} playlists`);
-        
-        // Process each playlist found
-        for (const playlist of data.items || []) {
-            console.log(`  Found playlist: ${playlist.snippet.title}`);
+        for (const playlistQuery of playlistQueries) {
+            console.log(`  Searching for playlist: "${playlistQuery}"`);
             
-            // Get videos from this playlist
-            const playlistVideos = await getPlaylistVideos(playlist.id.playlistId, week);
-            console.log(`  Got ${playlistVideos.length} videos from playlist`);
-            highlights.push(...playlistVideos);
+            const response = await fetch(
+                `https://www.googleapis.com/youtube/v3/search?` +
+                `part=snippet&` +
+                `channelId=${NFL_CHANNEL_ID}&` +
+                `q=${encodeURIComponent(playlistQuery)}&` +
+                `type=playlist&` +
+                `maxResults=3&` +
+                `order=date&` +
+                `key=${YOUTUBE_API_KEY}`
+            );
+
+            console.log(`  Playlist search response status: ${response.status}`);
+
+            if (!response.ok) {
+                const errorData = await response.json().catch(() => ({}));
+                console.error(`  YouTube API error ${response.status}:`, errorData);
+                continue;
+            }
+
+            const data = await response.json();
+            console.log(`  Found ${data.items?.length || 0} playlists for query: "${playlistQuery}"`);
+            
+            // Process each playlist found
+            for (const playlist of data.items || []) {
+                console.log(`  Found playlist: ${playlist.snippet.title}`);
+                
+                // Get videos from this playlist
+                const playlistVideos = await getPlaylistVideos(playlist.id.playlistId, week);
+                console.log(`  Got ${playlistVideos.length} videos from playlist`);
+                highlights.push(...playlistVideos);
+            }
         }
         
     } catch (error) {
-        console.error(`  Error searching for playlist "${playlistQuery}":`, error);
+        console.error(`  Error searching for playlists:`, error);
     }
 
     return highlights;
@@ -260,12 +268,19 @@ function parsePlaylistVideoData(playlistItem, week) {
     const title = snippet.title;
     const description = snippet.description || '';
     
+    // Filter out unwanted video types
+    if (!isValidHighlightVideo(title, description)) {
+        console.log(`  Skipped playlist video: ${title} (not a highlight)`);
+        return null;
+    }
+    
     // Extract date from publishedAt
     const publishedDate = new Date(snippet.publishedAt);
     const dateString = publishedDate.toISOString().split('T')[0];
     
     // Only process videos from 2025 season (September 2025 onwards)
     if (!is2025Season(dateString)) {
+        console.log(`  Skipped playlist video: ${title} (not 2025 season)`);
         return null;
     }
     
@@ -277,9 +292,11 @@ function parsePlaylistVideoData(playlistItem, week) {
     const teams = extractTeamsFromText(title + ' ' + description);
     
     if (teams.length < 2) {
+        console.log(`  Skipped playlist video: ${title} (no teams found)`);
         return null;
     }
 
+    console.log(`  Valid playlist highlight: ${teams[0]} vs ${teams[1]} (${dateString})`);
     return {
         id: resourceId.videoId,
         team1: teams[0],
@@ -292,6 +309,101 @@ function parsePlaylistVideoData(playlistItem, week) {
         publishedAt: snippet.publishedAt,
         thumbnail: snippet.thumbnails?.medium?.url
     };
+}
+
+// NEW: Filter out unwanted video types
+function isValidHighlightVideo(title, description) {
+    const lowerTitle = title.toLowerCase();
+    const lowerDescription = (description || '').toLowerCase();
+    const combinedText = lowerTitle + ' ' + lowerDescription;
+    
+    // Must contain "Game Highlights" or "Highlights"
+    if (!combinedText.includes('highlights') && !combinedText.includes('game highlights')) {
+        return false;
+    }
+    
+    // Exclude unwanted video types
+    const excludePatterns = [
+        'power rankings',
+        'rankings',
+        'full game',
+        'complete game',
+        'reaction',
+        'reactions',
+        'gameday final',
+        'gameday final reaction',
+        'analysis',
+        'breakdown',
+        'recap',
+        'recaps',
+        'preview',
+        'previews',
+        'prediction',
+        'predictions',
+        'draft',
+        'draft picks',
+        'free agency',
+        'trade',
+        'trades',
+        'injury',
+        'injuries',
+        'news',
+        'update',
+        'updates',
+        'press conference',
+        'press conferences',
+        'interview',
+        'interviews',
+        'mic\'d up',
+        'micd up',
+        'sound fx',
+        'sound effects',
+        'top 10',
+        'top plays',
+        'best plays',
+        'worst plays',
+        'bloopers',
+        'funny moments',
+        'celebration',
+        'celebrations',
+        'dance',
+        'dancing',
+        'music',
+        'song',
+        'songs',
+        'commercial',
+        'commercials',
+        'advertisement',
+        'advertisements',
+        'sponsor',
+        'sponsored',
+        'partnership',
+        'partnerships'
+    ];
+    
+    for (const pattern of excludePatterns) {
+        if (combinedText.includes(pattern)) {
+            return false;
+        }
+    }
+    
+    // Must contain team names (basic check)
+    const teamKeywords = [
+        'vs', 'versus', 'against', 'at', '@',
+        'chiefs', 'bills', 'cowboys', 'packers', 'eagles', '49ers',
+        'dolphins', 'lions', 'ravens', 'texans', 'bengals', 'browns',
+        'steelers', 'colts', 'jaguars', 'titans', 'broncos', 'raiders',
+        'chargers', 'rams', 'falcons', 'panthers', 'bears', 'vikings',
+        'saints', 'giants', 'jets', 'buccaneers', 'cardinals', 'seahawks',
+        'commanders', 'patriots'
+    ];
+    
+    const hasTeamKeywords = teamKeywords.some(keyword => combinedText.includes(keyword));
+    if (!hasTeamKeywords) {
+        return false;
+    }
+    
+    return true;
 }
 
 // NEW: Remove duplicate highlights based on videoId
@@ -311,12 +423,19 @@ function parseVideoData(videoItem, week) {
     const title = snippet.title;
     const description = snippet.description;
     
+    // Filter out unwanted video types
+    if (!isValidHighlightVideo(title, description)) {
+        console.log(`  Skipped video: ${title} (not a highlight)`);
+        return null;
+    }
+    
     // Extract date from publishedAt
     const publishedDate = new Date(snippet.publishedAt);
     const dateString = publishedDate.toISOString().split('T')[0];
     
     // Only process videos from 2025 season (September 2025 onwards)
     if (!is2025Season(dateString)) {
+        console.log(`  Skipped video: ${title} (not 2025 season)`);
         return null;
     }
     
@@ -328,9 +447,11 @@ function parseVideoData(videoItem, week) {
     const teams = extractTeamsFromText(title + ' ' + description);
     
     if (teams.length < 2) {
+        console.log(`  Skipped video: ${title} (no teams found)`);
         return null; // Skip if we can't identify two teams
     }
 
+    console.log(`  Valid video highlight: ${teams[0]} vs ${teams[1]} (${dateString})`);
     return {
         id: videoItem.id.videoId,
         team1: teams[0],
@@ -561,19 +682,26 @@ function loadExistingHighlights() {
 
 // Merge new highlights with existing ones, avoiding duplicates
 function mergeHighlights(existingHighlights, newHighlights) {
-    const existingIds = new Set(existingHighlights.map(h => h.id));
-    const existingVideoIds = new Set(existingHighlights.map(h => h.videoId));
+    // Filter out demo data from existing highlights
+    const realExistingHighlights = existingHighlights.filter(h => !h.id.startsWith('demo'));
+    
+    const existingIds = new Set(realExistingHighlights.map(h => h.id));
+    const existingVideoIds = new Set(realExistingHighlights.map(h => h.videoId));
     
     // Filter out duplicates based on id or videoId
     const uniqueNewHighlights = newHighlights.filter(highlight => 
         !existingIds.has(highlight.id) && !existingVideoIds.has(highlight.videoId)
     );
     
-    // Combine existing and new highlights
-    const allHighlights = [...existingHighlights, ...uniqueNewHighlights];
+    // Combine existing and new highlights (no demo data)
+    const allHighlights = [...realExistingHighlights, ...uniqueNewHighlights];
     
     // Sort by date (newest first)
     allHighlights.sort((a, b) => new Date(b.date) - new Date(a.date));
+    
+    console.log(`Filtered out ${existingHighlights.length - realExistingHighlights.length} demo highlights`);
+    console.log(`Kept ${realExistingHighlights.length} real highlights from existing data`);
+    console.log(`Added ${uniqueNewHighlights.length} new highlights`);
     
     return allHighlights;
 }
