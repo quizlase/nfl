@@ -241,7 +241,7 @@ async function searchHighlightsForWeek(week) {
                 if (highlight) {
                     console.log(`  Valid highlight found: ${highlight.team1} vs ${highlight.team2} (${highlight.date})`);
                     if (!highlights.find(h => h.videoId === highlight.videoId)) {
-                        highlights.push(highlight);
+                    highlights.push(highlight);
                     }
                 } else {
                     console.log(`  Skipped video: ${item.snippet?.title} (no teams found or wrong date)`);
@@ -317,12 +317,15 @@ function isValidHighlightVideo(title, description) {
     const lowerDescription = (description || '').toLowerCase();
     const combinedText = lowerTitle + ' ' + lowerDescription;
     
-    // Must contain "Game Highlights" or "Highlights"
-    if (!combinedText.includes('highlights') && !combinedText.includes('game highlights')) {
+    console.log(`    Checking video: "${title}"`);
+    
+    // Must contain "Game Highlights" - be more strict
+    if (!combinedText.includes('game highlights')) {
+        console.log(`    Rejected: No "Game Highlights" in title`);
         return false;
     }
     
-    // Exclude unwanted video types
+    // Exclude unwanted video types - be more aggressive
     const excludePatterns = [
         'power rankings',
         'rankings',
@@ -332,6 +335,7 @@ function isValidHighlightVideo(title, description) {
         'reactions',
         'gameday final',
         'gameday final reaction',
+        'good morning football',
         'analysis',
         'breakdown',
         'recap',
@@ -378,11 +382,18 @@ function isValidHighlightVideo(title, description) {
         'sponsor',
         'sponsored',
         'partnership',
-        'partnerships'
+        'partnerships',
+        'show',
+        'episode',
+        'season',
+        'debut',
+        'amazing',
+        'angry runs'
     ];
     
     for (const pattern of excludePatterns) {
         if (combinedText.includes(pattern)) {
+            console.log(`    Rejected: Contains "${pattern}"`);
             return false;
         }
     }
@@ -400,22 +411,30 @@ function isValidHighlightVideo(title, description) {
     
     const hasTeamKeywords = teamKeywords.some(keyword => combinedText.includes(keyword));
     if (!hasTeamKeywords) {
+        console.log(`    Rejected: No team keywords found`);
         return false;
     }
     
+    console.log(`    Accepted: Valid highlight video`);
     return true;
 }
 
 // NEW: Remove duplicate highlights based on videoId
 function removeDuplicateHighlights(highlights) {
     const seen = new Set();
-    return highlights.filter(highlight => {
-        if (seen.has(highlight.videoId)) {
-            return false;
+    const uniqueHighlights = [];
+    
+    for (const highlight of highlights) {
+        if (!seen.has(highlight.videoId)) {
+            seen.add(highlight.videoId);
+            uniqueHighlights.push(highlight);
+        } else {
+            console.log(`    Removed duplicate: ${highlight.videoId} - ${highlight.description}`);
         }
-        seen.add(highlight.videoId);
-        return true;
-    });
+    }
+    
+    console.log(`    Removed ${highlights.length - uniqueHighlights.length} duplicates`);
+    return uniqueHighlights;
 }
 
 function parseVideoData(videoItem, week) {
@@ -682,8 +701,21 @@ function loadExistingHighlights() {
 
 // Merge new highlights with existing ones, avoiding duplicates
 function mergeHighlights(existingHighlights, newHighlights) {
-    // Filter out demo data from existing highlights
-    const realExistingHighlights = existingHighlights.filter(h => !h.id.startsWith('demo'));
+    // Filter out demo data and invalid highlights from existing highlights
+    const realExistingHighlights = existingHighlights.filter(h => {
+        // Remove demo data
+        if (h.id.startsWith('demo')) {
+            return false;
+        }
+        
+        // Remove invalid highlights (power rankings, full games, etc.)
+        if (!isValidHighlightVideo(h.description || '', '')) {
+            console.log(`Removing invalid existing highlight: ${h.description}`);
+            return false;
+        }
+        
+        return true;
+    });
     
     const existingIds = new Set(realExistingHighlights.map(h => h.id));
     const existingVideoIds = new Set(realExistingHighlights.map(h => h.videoId));
@@ -693,14 +725,14 @@ function mergeHighlights(existingHighlights, newHighlights) {
         !existingIds.has(highlight.id) && !existingVideoIds.has(highlight.videoId)
     );
     
-    // Combine existing and new highlights (no demo data)
+    // Combine existing and new highlights (no demo data, no invalid highlights)
     const allHighlights = [...realExistingHighlights, ...uniqueNewHighlights];
     
     // Sort by date (newest first)
     allHighlights.sort((a, b) => new Date(b.date) - new Date(a.date));
     
-    console.log(`Filtered out ${existingHighlights.length - realExistingHighlights.length} demo highlights`);
-    console.log(`Kept ${realExistingHighlights.length} real highlights from existing data`);
+    console.log(`Filtered out ${existingHighlights.length - realExistingHighlights.length} invalid/demo highlights`);
+    console.log(`Kept ${realExistingHighlights.length} valid highlights from existing data`);
     console.log(`Added ${uniqueNewHighlights.length} new highlights`);
     
     return allHighlights;
