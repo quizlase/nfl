@@ -108,12 +108,14 @@ async function searchPlaylistForWeek(week) {
     const highlights = [];
     
     try {
-        // Search for multiple playlist patterns
+        // Search for multiple playlist patterns - focus on the real ones
         const playlistQueries = [
             `Week ${week} Game Recaps`,
             `Week ${week} Game Highlights`,
             `NFL 2025 Week ${week} Game Highlights`,
-            `NFL 2025 Season Week ${week} Game Highlights`
+            `NFL 2025 Season Week ${week} Game Highlights`,
+            `NFL 2025 Season Week ${week}`,
+            `2025 NFL Season Week ${week}`
         ];
         
         for (const playlistQuery of playlistQueries) {
@@ -198,15 +200,15 @@ async function getPlaylistVideos(playlistId, week) {
 async function searchHighlightsForWeek(week) {
     const highlights = [];
     
-    // Generate search queries for 2025 season only
+    // Generate search queries for 2025 season only - focus on real highlights
     const searchQueries = [
+        `NFL 2025 Season Week ${week} Game Highlights`,
+        `NFL 2025 Week ${week} Game Highlights`,
+        `2025 NFL Season Week ${week} Game Highlights`,
         `NFL 2025 Season Week ${week}`,
         `NFL 2025 Week ${week} highlights`,
         `NFL highlights week ${week} 2025`,
-        `NFL week ${week} highlights 2025`,
-        `NFL 2025 week ${week} highlights`,
-        `NFL 2025 Season Week ${week} Game Highlights`,
-        `NFL 2025 Week ${week} Game Highlights`
+        `NFL week ${week} highlights 2025`
     ];
 
     console.log(`  Video search queries: ${searchQueries.length}`);
@@ -319,13 +321,17 @@ function isValidHighlightVideo(title, description) {
     
     console.log(`    Checking video: "${title}"`);
     
-    // Must contain "Game Highlights" - be more strict
-    if (!combinedText.includes('game highlights')) {
-        console.log(`    Rejected: No "Game Highlights" in title`);
+    // Must contain "Game Highlights" or "Highlights" - be more flexible
+    // Also allow videos that have team vs team pattern even without "highlights"
+    const hasHighlights = combinedText.includes('game highlights') || combinedText.includes('highlights');
+    const hasTeamVsPattern = /vs\.?\s+\w+.*game/i.test(title) || /vs\.?\s+\w+.*highlights/i.test(title);
+    
+    if (!hasHighlights && !hasTeamVsPattern) {
+        console.log(`    Rejected: No "Game Highlights", "Highlights", or team vs team pattern in title`);
         return false;
     }
     
-    // Exclude unwanted video types - be more aggressive
+    // Exclude unwanted video types - be more specific
     const excludePatterns = [
         'power rankings',
         'rankings',
@@ -333,7 +339,6 @@ function isValidHighlightVideo(title, description) {
         'complete game',
         'reaction',
         'reactions',
-        'gameday final',
         'gameday final reaction',
         'good morning football',
         'analysis',
@@ -382,13 +387,7 @@ function isValidHighlightVideo(title, description) {
         'sponsor',
         'sponsored',
         'partnership',
-        'partnerships',
-        'show',
-        'episode',
-        'season',
-        'debut',
-        'amazing',
-        'angry runs'
+        'partnerships'
     ];
     
     for (const pattern of excludePatterns) {
