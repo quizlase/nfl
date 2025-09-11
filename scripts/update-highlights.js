@@ -83,8 +83,16 @@ async function searchNFLHighlights() {
             const videoHighlights = await searchHighlightsForWeek(week);
             console.log(`Found ${videoHighlights.length} highlights from video search for week ${week}`);
             
+            // If no highlights found, try a broader search
+            let additionalHighlights = [];
+            if (playlistHighlights.length === 0 && videoHighlights.length === 0) {
+                console.log(`No highlights found for week ${week}, trying broader search...`);
+                additionalHighlights = await searchAllNFLHighlights(week);
+                console.log(`Found ${additionalHighlights.length} highlights from broader search`);
+            }
+            
             // Combine results and remove duplicates
-            const allWeekHighlights = [...playlistHighlights, ...videoHighlights];
+            const allWeekHighlights = [...playlistHighlights, ...videoHighlights, ...additionalHighlights];
             const uniqueHighlights = removeDuplicateHighlights(allWeekHighlights);
             console.log(`Unique highlights for week ${week}: ${uniqueHighlights.length}`);
             
@@ -127,7 +135,7 @@ async function searchPlaylistForWeek(week) {
                 `channelId=${NFL_CHANNEL_ID}&` +
                 `q=${encodeURIComponent(playlistQuery)}&` +
                 `type=playlist&` +
-                `maxResults=3&` +
+                `maxResults=5&` +
                 `order=date&` +
                 `key=${YOUTUBE_API_KEY}`
             );
@@ -208,7 +216,9 @@ async function searchHighlightsForWeek(week) {
         `NFL 2025 Season Week ${week}`,
         `NFL 2025 Week ${week} highlights`,
         `NFL highlights week ${week} 2025`,
-        `NFL week ${week} highlights 2025`
+        `NFL week ${week} highlights 2025`,
+        `Game Highlights NFL 2025 Season Week ${week}`,
+        `Game Highlights 2025 NFL Season Week ${week}`
     ];
 
     console.log(`  Video search queries: ${searchQueries.length}`);
@@ -255,6 +265,51 @@ async function searchHighlightsForWeek(week) {
     }
 
     console.log(`  Total video highlights found: ${highlights.length}`);
+    return highlights;
+}
+
+// NEW: Broader search for all NFL highlights
+async function searchAllNFLHighlights(week) {
+    const highlights = [];
+    
+    try {
+        console.log(`  Trying broader search for week ${week}...`);
+        
+        // Search for any video with "Game Highlights" and "2025" and "Week X"
+        const response = await fetch(
+            `https://www.googleapis.com/youtube/v3/search?` +
+            `part=snippet&` +
+            `channelId=${NFL_CHANNEL_ID}&` +
+            `q=Game Highlights 2025 Week ${week}&` +
+            `type=video&` +
+            `maxResults=20&` +
+            `order=date&` +
+            `key=${YOUTUBE_API_KEY}`
+        );
+
+        console.log(`  Broader search response status: ${response.status}`);
+
+        if (!response.ok) {
+            const errorData = await response.json().catch(() => ({}));
+            console.error(`  YouTube API error ${response.status}:`, errorData);
+            return highlights;
+        }
+
+        const data = await response.json();
+        console.log(`  Found ${data.items?.length || 0} videos in broader search`);
+        
+        for (const item of data.items || []) {
+            const highlight = parseVideoData(item, week);
+            if (highlight) {
+                console.log(`  Valid broader highlight: ${highlight.team1} vs ${highlight.team2}`);
+                highlights.push(highlight);
+            }
+        }
+        
+    } catch (error) {
+        console.error(`  Error in broader search:`, error);
+    }
+
     return highlights;
 }
 
@@ -345,16 +400,20 @@ function removeDuplicateHighlights(highlights) {
     const seen = new Set();
     const uniqueHighlights = [];
     
+    console.log(`    Processing ${highlights.length} highlights for duplicates...`);
+    
     for (const highlight of highlights) {
         if (!seen.has(highlight.videoId)) {
             seen.add(highlight.videoId);
             uniqueHighlights.push(highlight);
+            console.log(`    Added: ${highlight.team1} vs ${highlight.team2} (${highlight.videoId})`);
         } else {
-            console.log(`    Removed duplicate: ${highlight.videoId} - ${highlight.description}`);
+            console.log(`    Removed duplicate: ${highlight.videoId} - ${highlight.team1} vs ${highlight.team2}`);
         }
     }
     
     console.log(`    Removed ${highlights.length - uniqueHighlights.length} duplicates`);
+    console.log(`    Final unique highlights: ${uniqueHighlights.length}`);
     return uniqueHighlights;
 }
 
