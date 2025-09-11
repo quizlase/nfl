@@ -38,7 +38,7 @@ const is2025Season = (dateString) => {
     return year === 2025 && month >= 9; // September 2025 onwards
 };
 
-// Search for NFL highlights on YouTube - SIMPLE DIRECT APPROACH
+// Search for NFL highlights on YouTube - DEBUG VERSION
 async function searchNFLHighlights() {
     console.log('=== NFL HIGHLIGHTS SEARCH START ===');
     console.log('YouTube API Key present:', !!YOUTUBE_API_KEY);
@@ -52,50 +52,68 @@ async function searchNFLHighlights() {
     const currentWeek = getCurrentWeek();
     
     console.log(`Current calculated week: ${currentWeek}`);
-    console.log(`Searching for Week ${currentWeek} highlights...`);
     
-    try {
-        // SIMPLE DIRECT SEARCH - just search for "Game Highlights 2025 Week X"
-        const response = await fetch(
-            `https://www.googleapis.com/youtube/v3/search?` +
-            `part=snippet&` +
-            `channelId=${NFL_CHANNEL_ID}&` +
-            `q=Game Highlights 2025 Week ${currentWeek}&` +
-            `type=video&` +
-            `maxResults=20&` +
-            `order=date&` +
-            `key=${YOUTUBE_API_KEY}`
-        );
-
-        console.log(`Search response status: ${response.status}`);
-
-        if (!response.ok) {
-            const errorData = await response.json().catch(() => ({}));
-            console.error(`YouTube API error ${response.status}:`, errorData);
-            return highlights;
-        }
-
-        const data = await response.json();
-        console.log(`Found ${data.items?.length || 0} videos`);
+    // Try multiple search approaches
+    const searchQueries = [
+        `Game Highlights 2025 Week ${currentWeek}`,
+        `NFL 2025 Season Week ${currentWeek} Game Highlights`,
+        `NFL 2025 Week ${currentWeek} Game Highlights`,
+        `2025 NFL Season Week ${currentWeek} Game Highlights`,
+        `NFL Game Highlights 2025 Week ${currentWeek}`
+    ];
+    
+    for (const query of searchQueries) {
+        console.log(`\n--- Searching: "${query}" ---`);
         
-        for (const item of data.items || []) {
-            const highlight = parseVideoData(item, currentWeek);
-            if (highlight) {
-                console.log(`Valid highlight: ${highlight.team1} vs ${highlight.team2}`);
-                highlights.push(highlight);
-            } else {
-                console.log(`Skipped: ${item.snippet?.title}`);
+        try {
+            const response = await fetch(
+                `https://www.googleapis.com/youtube/v3/search?` +
+                `part=snippet&` +
+                `channelId=${NFL_CHANNEL_ID}&` +
+                `q=${encodeURIComponent(query)}&` +
+                `type=video&` +
+                `maxResults=10&` +
+                `order=date&` +
+                `key=${YOUTUBE_API_KEY}`
+            );
+
+            console.log(`Response status: ${response.status}`);
+
+            if (!response.ok) {
+                const errorData = await response.json().catch(() => ({}));
+                console.error(`YouTube API error ${response.status}:`, errorData);
+                continue;
             }
+
+            const data = await response.json();
+            console.log(`Found ${data.items?.length || 0} videos for query: "${query}"`);
+            
+            for (const item of data.items || []) {
+                console.log(`  Video: "${item.snippet?.title}"`);
+                console.log(`  Published: ${item.snippet?.publishedAt}`);
+                
+                const highlight = parseVideoData(item, currentWeek);
+                if (highlight) {
+                    console.log(`  ✅ ACCEPTED: ${highlight.team1} vs ${highlight.team2}`);
+                    highlights.push(highlight);
+                } else {
+                    console.log(`  ❌ REJECTED: ${item.snippet?.title}`);
+                }
+            }
+            
+        } catch (error) {
+            console.error(`Error searching "${query}":`, error);
         }
-        
-    } catch (error) {
-        console.error(`Error in search:`, error);
     }
     
     console.log(`\n=== SEARCH COMPLETE ===`);
     console.log(`Total highlights found: ${highlights.length}`);
     
-    return highlights;
+    // Remove duplicates
+    const uniqueHighlights = removeDuplicateHighlights(highlights);
+    console.log(`Unique highlights after deduplication: ${uniqueHighlights.length}`);
+    
+    return uniqueHighlights;
 }
 
 // NEW: Search for playlists first (much more efficient)
@@ -355,24 +373,22 @@ function parsePlaylistVideoData(playlistItem, week) {
     };
 }
 
-// NEW: Filter for NFL Game Highlights - SIMPLE AND EFFECTIVE
+// NEW: Filter for NFL Game Highlights - ULTRA SIMPLE
 function isValidHighlightVideo(title, description) {
     const lowerTitle = title.toLowerCase();
     
     console.log(`    Checking video: "${title}"`);
     
-    // Must contain "game highlights" and "2025" and "week"
+    // Just check for "game highlights" and "vs" - that's it!
     const hasGameHighlights = lowerTitle.includes('game highlights');
-    const has2025 = lowerTitle.includes('2025');
-    const hasWeek = lowerTitle.includes('week');
     const hasVs = lowerTitle.includes('vs');
     
-    if (hasGameHighlights && has2025 && hasWeek && hasVs) {
-        console.log(`    Accepted: Contains game highlights, 2025, week, and vs`);
+    if (hasGameHighlights && hasVs) {
+        console.log(`    ✅ ACCEPTED: Contains "game highlights" and "vs"`);
         return true;
     }
     
-    console.log(`    Rejected: Missing required elements`);
+    console.log(`    ❌ REJECTED: Missing "game highlights" or "vs"`);
     return false;
 }
 
