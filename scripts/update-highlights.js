@@ -59,6 +59,15 @@ async function searchNFLHighlights() {
     console.log(`Found ${playlistHighlights.length} highlights from playlists`);
     highlights.push(...playlistHighlights);
     
+    // STEP 1.5: Try the specific known playlist for Week 1 2025
+    if (currentWeek === 1 && highlights.length === 0) {
+        console.log(`\n--- STEP 1.5: Trying specific Week 1 2025 playlist ---`);
+        const specificPlaylistId = 'PLRdw3IjKY2glvQ0OzVS3Eqpc79pJ3-pwk';
+        const specificHighlights = await getPlaylistVideos(specificPlaylistId, currentWeek);
+        console.log(`Found ${specificHighlights.length} highlights from specific playlist`);
+        highlights.push(...specificHighlights);
+    }
+    
     // STEP 2: If no highlights found, try direct video search
     if (highlights.length === 0) {
         console.log(`\n--- STEP 2: No playlist highlights found, trying video search ---`);
@@ -390,22 +399,30 @@ function parsePlaylistVideoData(playlistItem, week) {
     };
 }
 
-// NEW: Filter for NFL Game Highlights - ULTRA SIMPLE
+// NEW: Filter for NFL Game Highlights - FIXED FOR 2025
 function isValidHighlightVideo(title, description) {
     const lowerTitle = title.toLowerCase();
     
     console.log(`    Checking video: "${title}"`);
     
-    // Just check for "game highlights" and "vs" - that's it!
+    // Check for "game highlights" - that's the main requirement
     const hasGameHighlights = lowerTitle.includes('game highlights');
-    const hasVs = lowerTitle.includes('vs');
     
-    if (hasGameHighlights && hasVs) {
-        console.log(`    ✅ ACCEPTED: Contains "game highlights" and "vs"`);
+    // Also accept videos that have team names and are from 2025
+    const has2025 = lowerTitle.includes('2025');
+    const hasTeamNames = /vs\.?|@/.test(title); // Look for "vs" or "@" in original case
+    
+    if (hasGameHighlights && has2025) {
+        console.log(`    ✅ ACCEPTED: Contains "game highlights" and "2025"`);
         return true;
     }
     
-    console.log(`    ❌ REJECTED: Missing "game highlights" or "vs"`);
+    if (hasTeamNames && has2025 && lowerTitle.includes('highlights')) {
+        console.log(`    ✅ ACCEPTED: Contains team names, "2025", and "highlights"`);
+        return true;
+    }
+    
+    console.log(`    ❌ REJECTED: Missing required elements`);
     return false;
 }
 
