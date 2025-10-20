@@ -1,6 +1,66 @@
 {
-  "lastUpdated": "2025-10-19T04:01:59.375Z",
+  "lastUpdated": "2025-10-20T04:13:52.932Z",
   "highlights": [
+    {
+      "id": "_Y4Ud54FZ4s",
+      "team1": "Atlanta Falcons",
+      "team2": "San Francisco 49ers",
+      "week": 7,
+      "date": "2025-10-20",
+      "description": "Atlanta Falcons vs San Francisco 49ers Game Highlights | 2025 NFL Season Week 7",
+      "videoId": "_Y4Ud54FZ4s",
+      "channel": "NFL",
+      "publishedAt": "2025-10-20T03:40:11Z",
+      "thumbnail": "https://i.ytimg.com/vi/_Y4Ud54FZ4s/mqdefault.jpg"
+    },
+    {
+      "id": "z0mBfBAfyJk",
+      "team1": "New England Patriots",
+      "team2": "Denver Broncos",
+      "week": 7,
+      "date": "2025-10-20",
+      "description": "New York Giants vs Denver Broncos Game Highlights | 2025 NFL Season Week 7",
+      "videoId": "z0mBfBAfyJk",
+      "channel": "NFL",
+      "publishedAt": "2025-10-20T00:08:34Z",
+      "thumbnail": "https://i.ytimg.com/vi/z0mBfBAfyJk/mqdefault.jpg"
+    },
+    {
+      "id": "S7Tme5vv0z0",
+      "team1": "Washington Commanders",
+      "team2": "Dallas Cowboys",
+      "week": 7,
+      "date": "2025-10-20",
+      "description": "Washington Commanders vs Dallas Cowboys Game Highlights | 2025 NFL Season Week 7",
+      "videoId": "S7Tme5vv0z0",
+      "channel": "NFL",
+      "publishedAt": "2025-10-20T00:02:49Z",
+      "thumbnail": "https://i.ytimg.com/vi/S7Tme5vv0z0/mqdefault.jpg"
+    },
+    {
+      "id": "jH9iu9YgV1w",
+      "team1": "Arizona Cardinals",
+      "team2": "Green Bay Packers",
+      "week": 7,
+      "date": "2025-10-19",
+      "description": "Green Bay Packers vs. Arizona Cardinals Game Highlights | NFL 2025 Season Week 7",
+      "videoId": "jH9iu9YgV1w",
+      "channel": "NFL",
+      "publishedAt": "2025-10-19T23:48:07Z",
+      "thumbnail": "https://i.ytimg.com/vi/jH9iu9YgV1w/mqdefault.jpg"
+    },
+    {
+      "id": "R3LlV9uf3jI",
+      "team1": "Indianapolis Colts",
+      "team2": "Los Angeles Chargers",
+      "week": 7,
+      "date": "2025-10-19",
+      "description": "Indianapolis Colts vs. Los Angeles Chargers Game Highlights | NFL 2025 Season Week 7",
+      "videoId": "R3LlV9uf3jI",
+      "channel": "NFL",
+      "publishedAt": "2025-10-19T23:31:37Z",
+      "thumbnail": "https://i.ytimg.com/vi/R3LlV9uf3jI/mqdefault.jpg"
+    },
     {
       "id": "iI_9-1w3Ykk",
       "team1": "Pittsburgh Steelers",
