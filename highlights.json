@@ -1,5 +1,5 @@
 {
-  "lastUpdated": "2025-10-21T03:56:55.568Z",
+  "lastUpdated": "2025-10-22T04:00:11.555Z",
   "highlights": [
     {
       "id": "185gWzzqUJg",
@@ -12,6 +12,18 @@
       "channel": "NFL",
       "publishedAt": "2025-10-21T02:43:01Z",
       "thumbnail": "https://i.ytimg.com/vi/185gWzzqUJg/mqdefault.jpg"
+    },
+    {
+      "id": "G1BFXoa6IhI",
+      "team1": "Houston Texans",
+      "team2": "Seattle Seahawks",
+      "week": 7,
+      "date": "2025-10-21",
+      "description": "Houston Texans vs Seattle Seahawks Game Highlights | 2025 NFL Season Week 7",
+      "videoId": "G1BFXoa6IhI",
+      "channel": "NFL",
+      "publishedAt": "2025-10-21T05:54:03Z",
+      "thumbnail": "https://i.ytimg.com/vi/G1BFXoa6IhI/mqdefault.jpg"
     },
     {
       "id": "_Y4Ud54FZ4s",
