@@ -1,5 +1,5 @@
 {
-  "lastUpdated": "2025-11-03T04:16:28.782Z",
+  "lastUpdated": "2025-11-03T06:26:40.925Z",
   "highlights": [
     {
       "id": "FJuTqHeUm7k",
@@ -36,6 +36,18 @@
       "channel": "NFL",
       "publishedAt": "2025-11-03T00:09:36Z",
       "thumbnail": "https://i.ytimg.com/vi/YZEmuzr-u7o/mqdefault.jpg"
+    },
+    {
+      "id": "Qh9YqtFy23U",
+      "team1": "Seattle Seahawks",
+      "team2": "Washington Commanders",
+      "week": 9,
+      "date": "2025-11-03",
+      "description": "Seattle Seahawks vs Washington Commanders Game Highlights | 2025 NFL Season Week 9",
+      "videoId": "Qh9YqtFy23U",
+      "channel": "NFL",
+      "publishedAt": "2025-11-03T04:35:37Z",
+      "thumbnail": "https://i.ytimg.com/vi/Qh9YqtFy23U/mqdefault.jpg"
     },
     {
       "id": "vH6ldlUzXGQ",
