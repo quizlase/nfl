@@ -1,6 +1,54 @@
 {
-  "lastUpdated": "2025-11-02T04:01:48.469Z",
+  "lastUpdated": "2025-11-03T04:16:28.782Z",
   "highlights": [
+    {
+      "id": "FJuTqHeUm7k",
+      "team1": "Jacksonville Jaguars",
+      "team2": "Las Vegas Raiders",
+      "week": 9,
+      "date": "2025-11-03",
+      "description": "Jacksonville Jaguars vs. Las Vegas Raiders Game Highlights | NFL 2025 Season Week 9",
+      "videoId": "FJuTqHeUm7k",
+      "channel": "NFL",
+      "publishedAt": "2025-11-03T00:51:34Z",
+      "thumbnail": "https://i.ytimg.com/vi/FJuTqHeUm7k/mqdefault.jpg"
+    },
+    {
+      "id": "G9SIgQo88zg",
+      "team1": "Kansas City Chiefs",
+      "team2": "Buffalo Bills",
+      "week": 9,
+      "date": "2025-11-03",
+      "description": "Kansas City Chiefs vs Buffalo Bills Game Highlights | 2025 NFL Season Week 9",
+      "videoId": "G9SIgQo88zg",
+      "channel": "NFL",
+      "publishedAt": "2025-11-03T00:46:20Z",
+      "thumbnail": "https://i.ytimg.com/vi/G9SIgQo88zg/mqdefault.jpg"
+    },
+    {
+      "id": "YZEmuzr-u7o",
+      "team1": "Los Angeles Rams",
+      "team2": "New Orleans Saints",
+      "week": 9,
+      "date": "2025-11-03",
+      "description": "New Orleans Saints vs. Los Angeles Rams Game Highlights | NFL 2025 Season Week 9",
+      "videoId": "YZEmuzr-u7o",
+      "channel": "NFL",
+      "publishedAt": "2025-11-03T00:09:36Z",
+      "thumbnail": "https://i.ytimg.com/vi/YZEmuzr-u7o/mqdefault.jpg"
+    },
+    {
+      "id": "vH6ldlUzXGQ",
+      "team1": "Chicago Bears",
+      "team2": "Cincinnati Bengals",
+      "week": 9,
+      "date": "2025-11-02",
+      "description": "Chicago Bears vs Cincinnati Bengals Game Highlights | 2025 NFL Season Week 9",
+      "videoId": "vH6ldlUzXGQ",
+      "channel": "NFL",
+      "publishedAt": "2025-11-02T22:28:36Z",
+      "thumbnail": "https://i.ytimg.com/vi/vH6ldlUzXGQ/mqdefault.jpg"
+    },
     {
       "id": "G5US45dr0Ys",
       "team1": "Baltimore Ravens",
