@@ -1,5 +1,5 @@
 {
-  "lastUpdated": "2025-11-28T07:51:22.756Z",
+  "lastUpdated": "2025-11-29T04:00:19.353Z",
   "highlights": [
     {
       "id": "qLBGJPw-dSM",
@@ -24,6 +24,18 @@
       "channel": "NFL",
       "publishedAt": "2025-11-28T05:00:57Z",
       "thumbnail": "https://i.ytimg.com/vi/j2Flfz0DGS8/mqdefault.jpg"
+    },
+    {
+      "id": "2OLNwdpjtHo",
+      "team1": "Chicago Bears",
+      "team2": "Philadelphia Eagles",
+      "week": 13,
+      "date": "2025-11-28",
+      "description": "Chicago Bears vs Philadelphia Eagles Game Highlights | 2025 NFL Season Week 13",
+      "videoId": "2OLNwdpjtHo",
+      "channel": "NFL",
+      "publishedAt": "2025-11-28T23:23:20Z",
+      "thumbnail": "https://i.ytimg.com/vi/2OLNwdpjtHo/mqdefault.jpg"
     },
     {
       "id": "8fRps_hg45U",
