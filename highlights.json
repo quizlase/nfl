@@ -1,5 +1,5 @@
 {
-  "lastUpdated": "2025-12-01T04:38:46.769Z",
+  "lastUpdated": "2025-12-01T06:29:02.937Z",
   "highlights": [
     {
       "id": "FckI37Gxv2o",
@@ -48,6 +48,18 @@
       "channel": "NFL",
       "publishedAt": "2025-12-01T00:26:48Z",
       "thumbnail": "https://i.ytimg.com/vi/v9LzFS6G3Mk/mqdefault.jpg"
+    },
+    {
+      "id": "QXL9KwJO2QI",
+      "team1": "Denver Broncos",
+      "team2": "Washington Commanders",
+      "week": 13,
+      "date": "2025-12-01",
+      "description": "Denver Broncos vs Washington Commanders Game Highlights | 2025 NFL Season Week 13",
+      "videoId": "QXL9KwJO2QI",
+      "channel": "NFL",
+      "publishedAt": "2025-12-01T05:23:56Z",
+      "thumbnail": "https://i.ytimg.com/vi/QXL9KwJO2QI/mqdefault.jpg"
     },
     {
       "id": "gUX5TBqpFGQ",
