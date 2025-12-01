@@ -1,6 +1,78 @@
 {
-  "lastUpdated": "2025-11-30T04:21:18.171Z",
+  "lastUpdated": "2025-12-01T04:38:46.769Z",
   "highlights": [
+    {
+      "id": "FckI37Gxv2o",
+      "team1": "Arizona Cardinals",
+      "team2": "Green Bay Packers",
+      "week": 13,
+      "date": "2025-12-01",
+      "description": "Arizona Cardinals vs Tampa Bay Buccaneers Game Highlights | 2025 NFL Season Week 13",
+      "videoId": "FckI37Gxv2o",
+      "channel": "NFL",
+      "publishedAt": "2025-12-01T01:20:45Z",
+      "thumbnail": "https://i.ytimg.com/vi/FckI37Gxv2o/mqdefault.jpg"
+    },
+    {
+      "id": "G0hb9RO3y8k",
+      "team1": "Las Vegas Raiders",
+      "team2": "Los Angeles Chargers",
+      "week": 13,
+      "date": "2025-12-01",
+      "description": "Las Vegas Raiders vs. Los Angeles Chargers Game Highlights | NFL 2025 Season Week 13",
+      "videoId": "G0hb9RO3y8k",
+      "channel": "NFL",
+      "publishedAt": "2025-12-01T00:41:49Z",
+      "thumbnail": "https://i.ytimg.com/vi/G0hb9RO3y8k/mqdefault.jpg"
+    },
+    {
+      "id": "nOkuO7Yat90",
+      "team1": "Buffalo Bills",
+      "team2": "Pittsburgh Steelers",
+      "week": 13,
+      "date": "2025-12-01",
+      "description": "Buffalo Bills vs Pittsburgh Steelers Game Highlights | 2025 NFL Season Week 13",
+      "videoId": "nOkuO7Yat90",
+      "channel": "NFL",
+      "publishedAt": "2025-12-01T00:33:28Z",
+      "thumbnail": "https://i.ytimg.com/vi/nOkuO7Yat90/mqdefault.jpg"
+    },
+    {
+      "id": "v9LzFS6G3Mk",
+      "team1": "Minnesota Vikings",
+      "team2": "Seattle Seahawks",
+      "week": 13,
+      "date": "2025-12-01",
+      "description": "Minnesota Vikings vs. Seattle Seahawks Game Highlights | NFL 2025 Season Week 13",
+      "videoId": "v9LzFS6G3Mk",
+      "channel": "NFL",
+      "publishedAt": "2025-12-01T00:26:48Z",
+      "thumbnail": "https://i.ytimg.com/vi/v9LzFS6G3Mk/mqdefault.jpg"
+    },
+    {
+      "id": "gUX5TBqpFGQ",
+      "team1": "Jacksonville Jaguars",
+      "team2": "Tennessee Titans",
+      "week": 13,
+      "date": "2025-11-30",
+      "description": "Jacksonville Jaguars vs. Tennessee Titans Game Highlights | NFL 2025 Season Week 13",
+      "videoId": "gUX5TBqpFGQ",
+      "channel": "NFL",
+      "publishedAt": "2025-11-30T21:36:44Z",
+      "thumbnail": "https://i.ytimg.com/vi/gUX5TBqpFGQ/mqdefault.jpg"
+    },
+    {
+      "id": "ZyKCwYPSg_k",
+      "team1": "Atlanta Falcons",
+      "team2": "New York Jets",
+      "week": 13,
+      "date": "2025-11-30",
+      "description": "Atlanta Falcons vs. New York Jets Game Highlights | NFL 2025 Season Week 13",
+      "videoId": "ZyKCwYPSg_k",
+      "channel": "NFL",
+      "publishedAt": "2025-11-30T21:34:35Z",
+      "thumbnail": "https://i.ytimg.com/vi/ZyKCwYPSg_k/mqdefault.jpg"
+    },
     {
       "id": "qLBGJPw-dSM",
       "team1": "Kansas City Chiefs",
