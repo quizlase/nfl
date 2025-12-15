@@ -1,5 +1,5 @@
 {
-  "lastUpdated": "2025-12-15T04:29:27.964Z",
+  "lastUpdated": "2025-12-15T06:30:42.531Z",
   "highlights": [
     {
       "id": "94IRFmHRqyY",
@@ -60,6 +60,18 @@
       "channel": "NFL",
       "publishedAt": "2025-12-15T00:56:54Z",
       "thumbnail": "https://i.ytimg.com/vi/4usWCOSrcv8/mqdefault.jpg"
+    },
+    {
+      "id": "XUfvXIgfgYI",
+      "team1": "Minnesota Vikings",
+      "team2": "Dallas Cowboys",
+      "week": 15,
+      "date": "2025-12-15",
+      "description": "Minnesota Vikings vs Dallas Cowboys Game Highlights | 2025 NFL Season Week 15",
+      "videoId": "XUfvXIgfgYI",
+      "channel": "NFL",
+      "publishedAt": "2025-12-15T04:51:10Z",
+      "thumbnail": "https://i.ytimg.com/vi/XUfvXIgfgYI/mqdefault.jpg"
     },
     {
       "id": "kurfb90PjzQ",
