@@ -1,5 +1,5 @@
 {
-  "lastUpdated": "2025-12-29T04:38:49.489Z",
+  "lastUpdated": "2025-12-29T06:30:47.496Z",
   "highlights": [
     {
       "id": "HetvEG7ndGQ",
@@ -24,6 +24,18 @@
       "channel": "NFL",
       "publishedAt": "2025-12-29T00:11:26Z",
       "thumbnail": "https://i.ytimg.com/vi/w6zHl1nZiQE/mqdefault.jpg"
+    },
+    {
+      "id": "iReb07eggsY",
+      "team1": "Chicago Bears",
+      "team2": "San Francisco 49ers",
+      "week": 17,
+      "date": "2025-12-29",
+      "description": "Chicago Bears vs San Francisco 49ers Game Highlights | 2025 NFL Season Week 17",
+      "videoId": "iReb07eggsY",
+      "channel": "NFL",
+      "publishedAt": "2025-12-29T04:56:53Z",
+      "thumbnail": "https://i.ytimg.com/vi/iReb07eggsY/mqdefault.jpg"
     },
     {
       "id": "ZChxJhi98L8",
